@@ -119,7 +119,8 @@ namespace vv.Infrastructure.Repositories
             string region,
             DateOnly asOfDate,
             string documentType,
-            int version)
+            int version,
+            CancellationToken cancellationToken = default)
         {
             _logger.LogInformation(
                 "Retrieving specific version of market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, Region={Region}, AsOf={AsOf}, DocType={DocType}, Version={Version}",
@@ -135,7 +136,7 @@ namespace vv.Infrastructure.Repositories
                 .WithDocumentType(documentType);
 
             // Delegate to versioning component
-            return await _versioning.GetBySpecifiedVersionAsync(spec, version);
+            return await _versioning.GetBySpecifiedVersionAsync(spec, version, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -145,7 +146,8 @@ namespace vv.Infrastructure.Repositories
             string assetId,
             string region,
             DateOnly asOfDate,
-            string documentType)
+            string documentType,
+            CancellationToken cancellationToken = default)
         {
             _logger.LogInformation(
                 "Retrieving latest version of market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, Region={Region}, AsOf={AsOf}, DocType={DocType}",
@@ -161,7 +163,7 @@ namespace vv.Infrastructure.Repositories
                 .WithDocumentType(documentType);
 
             // Delegate to versioning component
-            return await _versioning.GetByLatestVersionAsync(spec);
+            return await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -192,7 +194,8 @@ namespace vv.Infrastructure.Repositories
             string assetClass,
             string? assetId = null,
             DateOnly? fromDate = null,
-            DateOnly? toDate = null)
+            DateOnly? toDate = null,
+            CancellationToken cancellationToken = default)
         {
             _logger.LogInformation(
                 "Querying market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, FromDate={FromDate}, ToDate={ToDate}",
@@ -213,7 +216,7 @@ namespace vv.Infrastructure.Repositories
                 spec.WithToDate(toDate.Value);
 
             // Delegate to repository component
-            return await _repository.QueryAsync(spec.ToExpression());
+            return await _repository.QueryAsync(spec.ToExpression(), cancellationToken: cancellationToken);
         }
 
         // Domain-specific method examples
