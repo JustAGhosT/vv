@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using vv.Domain.Models;
@@ -11,7 +12,7 @@ namespace vv.Infrastructure.Repositories.Extensions
     public static class CosmosRepositoryBatchExtensions
     {
         /// <summary>
-        /// Adds multiple entities in sequence
+        /// Adds multiple entities in parallel with controlled concurrency
         /// </summary>
         /// <typeparam name="T">Entity type</typeparam>
         /// <param name="repository">Repository instance</param>
@@ -24,12 +25,25 @@ namespace vv.Infrastructure.Repositories.Extensions
             CancellationToken cancellationToken = default)
             where T : class, IMarketDataEntity
         {
-            var results = new List<T>();
-            foreach (var item in items)
+            // Use controlled parallelism to avoid overwhelming the database
+            const int maxConcurrency = 10;
+            var semaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
+            
+            var tasks = items.Select(async item =>
             {
-                var result = await repository.CreateAsync(item, cancellationToken);
-                results.Add(result);
-            }
+                await semaphore.WaitAsync(cancellationToken);
+                try
+                {
+                    return await repository.CreateAsync(item, cancellationToken);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+            
+            var results = await Task.WhenAll(tasks);
+            semaphore.Dispose();
             return results;
         }
 

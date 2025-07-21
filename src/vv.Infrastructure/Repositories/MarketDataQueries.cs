@@ -54,8 +54,8 @@ namespace vv.Infrastructure.Repositories
                 .WithDocumentType(documentType);
 
             // Use the versioning component
-            var result = await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
-            return result.Result;
+            var (entity, _) = await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
+            return entity;
         }
 
         /// <inheritdoc/>
@@ -201,8 +201,8 @@ namespace vv.Infrastructure.Repositories
             var spec = MarketDataSpecification.ForCurrencyPair(baseCurrency, quoteCurrency)
                 .WithAsOfDate(asOfDate);
 
-            var result = await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
-            return FxSpotPriceRate.FromEntity(result.Result);
+            var (entity, _) = await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
+            return FxSpotPriceRate.FromEntity(entity);
         }
 
         /// <inheritdoc/>

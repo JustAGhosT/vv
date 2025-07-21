@@ -50,8 +50,8 @@ namespace vv.Domain.Models
 
             // Parse the asset ID to get base and quote currencies (e.g., "eurusd")
             string assetId = entity.AssetId.ToLowerInvariant();
-            if (assetId.Length < 6)
-                throw new ArgumentException($"Invalid asset ID format: {assetId}");
+            if (assetId.Length != 6)
+                throw new ArgumentException($"Invalid asset ID format: {assetId}. Expected format is 6 characters (e.g., 'eurusd')");
 
             string baseCurrency = assetId.Substring(0, 3).ToUpperInvariant();
             string quoteCurrency = assetId.Substring(3, 3).ToUpperInvariant();

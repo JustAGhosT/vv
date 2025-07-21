@@ -30,13 +30,8 @@ public class VersioningComponent<T> : IVersioningCapability<T>
             specification.ToExpression(), 
             cancellationToken: cancellationToken);
             
-        // Find max version
-        int maxVersion = 0;
-        foreach (var entity in entities)
-        {
-            if (entity.Version > maxVersion)
-                maxVersion = entity.Version;
-        }
+        // Find max version using LINQ for better performance and safety
+        int maxVersion = entities.Any() ? entities.Max(e => e.Version) : 0;
         
         return maxVersion + 1;
     }
@@ -50,18 +45,10 @@ public class VersioningComponent<T> : IVersioningCapability<T>
             specification.ToExpression(), 
             cancellationToken: cancellationToken);
             
-        // Find highest version
-        T? latest = null;
-        int maxVersion = -1;
-        
-        foreach (var entity in entities)
-        {
-            if (entity.Version > maxVersion)
-            {
-                maxVersion = entity.Version;
-                latest = entity;
-            }
-        }
+        // Find highest version using LINQ for better performance
+        var latest = entities
+            .OrderByDescending(e => e.Version)
+            .FirstOrDefault();
         
         if (latest == null)
             return (null, null);

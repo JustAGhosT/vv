@@ -133,9 +133,10 @@ def update_markdown_links(content, file_mapping):
         deps_text = match.group(1)
         for old_name, new_name in file_mapping.items():
             # Only replace exact filename matches to avoid partial replacements
+            # Escape both old and new names to handle special regex characters
             deps_text = re.sub(
                 r'([\'"]?)' + re.escape(old_name) + r'([\'"]?)', 
-                r'\1' + new_name + r'\2', 
+                r'\1' + re.escape(new_name).replace('\\', r'\\') + r'\2', 
                 deps_text
             )
         return f'dependencies: [{deps_text}]'

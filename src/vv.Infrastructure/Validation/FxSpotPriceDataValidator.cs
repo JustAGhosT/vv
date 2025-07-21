@@ -20,7 +20,7 @@ namespace vv.Infrastructure.Validation
 
             var errors = new List<ValidationError>();
             // Validate AssetId
-            if (string.IsNullOrEmpty(data.AssetId) || !data.AssetId.Contains('/'))
+            if (string.IsNullOrWhiteSpace(data.AssetId) || !data.AssetId.Contains('/'))
             {
                 errors.Add(new ValidationError("AssetId", "Asset ID is required and must be in the format XXX/YYY"));
             }

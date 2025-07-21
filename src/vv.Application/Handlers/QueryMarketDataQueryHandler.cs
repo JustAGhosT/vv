@@ -30,7 +30,7 @@ namespace vv.Application.Handlers
 
             return await _marketDataService.QueryAsync(e =>
                 (e.AssetClass == request.AssetClass) &&
-                (string.IsNullOrEmpty(request.AssetId) || e.AssetId == request.AssetId.ToLowerInvariant()) &&
+                (string.IsNullOrEmpty(request.AssetId) || e.AssetId == request.AssetId?.ToLowerInvariant()) &&
                 (request.FromDate == null || e.AsOfDate >= request.FromDate) &&
                 (request.ToDate == null || e.AsOfDate <= request.ToDate) &&
                 (string.IsNullOrEmpty(request.Region) || e.Region == request.Region)
