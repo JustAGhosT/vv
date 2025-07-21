@@ -27,7 +27,13 @@ try {
     }
 
     // Generate the report using coverage files from ALL test projects
-    const reportDir = path.join("coverage-report");
+    const reportDir = path.resolve(process.cwd(), "coverage-report");
+    
+    // Validate that the report directory is within the current working directory
+    const currentDir = process.cwd();
+    if (!reportDir.startsWith(currentDir)) {
+      throw new Error("Invalid report directory path - must be within current directory");
+    }
     
     // Clear existing coverage reports
     if (fs.existsSync(reportDir)) {
