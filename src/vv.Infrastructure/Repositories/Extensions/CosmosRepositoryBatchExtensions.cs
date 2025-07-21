@@ -27,7 +27,7 @@ namespace vv.Infrastructure.Repositories.Extensions
         {
             // Use controlled parallelism to avoid overwhelming the database
             const int maxConcurrency = 10;
-            var semaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
+            using var semaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
             
             var tasks = items.Select(async item =>
             {
@@ -43,7 +43,6 @@ namespace vv.Infrastructure.Repositories.Extensions
             });
             
             var results = await Task.WhenAll(tasks);
-            semaphore.Dispose();
             return results;
         }
 

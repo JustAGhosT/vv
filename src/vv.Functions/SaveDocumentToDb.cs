@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
@@ -84,7 +84,17 @@ public class SaveDocumentToDb
         string schemaVersion,
         Func<TDto, IMarketDataEntity> toDomainMapper)
     {
-        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        // Validate request body size to prevent DoS attacks
+        const int maxRequestBodySize = 10 * 1024 * 1024; // 10MB limit
+        if (req.ContentLength.HasValue && req.ContentLength.Value > maxRequestBodySize)
+        {
+            _logger.LogWarning("Request body size {Size} exceeds maximum allowed size {MaxSize}", 
+                req.ContentLength.Value, maxRequestBodySize);
+            return new BadRequestObjectResult("Request body too large.");
+        }
+
+        using var reader = new StreamReader(req.Body);
+        string requestBody = await reader.ReadToEndAsync();
 
         // Schema validation
         var validated = JsonSchemaValidatorRegistry.Validator.Validate(dataType, assetClass, schemaVersion, requestBody, out var errorMessage);
@@ -99,7 +109,11 @@ public class SaveDocumentToDb
         {
             requestData = System.Text.Json.JsonSerializer.Deserialize<TDto>(requestBody, new System.Text.Json.JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                MaxDepth = 32, // Prevent deeply nested JSON attacks
+                PropertyNameCaseInsensitive = true,
+                AllowTrailingCommas = false, // Strict JSON parsing
+                ReadCommentHandling = JsonCommentHandling.Disallow // Disallow comments for security
             });
             if (requestData == null)
                 throw new ArgumentNullException(nameof(requestData));

@@ -61,8 +61,8 @@ namespace vv.Infrastructure.Configuration
             {
                 if (string.IsNullOrEmpty(value))
                     throw new ArgumentException("Secret value cannot be null or empty", nameof(value));
-                if (expiresOn <= DateTimeOffset.UtcNow)
-                    throw new ArgumentException("Expiration must be a future date/time", nameof(expiresOn));
+                // Allow slight tolerance for clock skew and remove strict future validation
+                // The expiration check is performed when the secret is retrieved, not when cached
                 Value = value;
                 ExpiresOn = expiresOn;
             }

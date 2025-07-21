@@ -132,7 +132,7 @@ namespace vv.Infrastructure.Configuration
                 {
                     if (!string.IsNullOrEmpty(cachedValue) && !isExpired)
                     {
-                        _logger?.LogDebug("Retrieved secret '{SecretName}' from cache", secretName);
+                        _logger?.LogDebug("Retrieved secret from cache");
                         return cachedValue;
                     }
                 }
@@ -145,7 +145,7 @@ namespace vv.Infrastructure.Configuration
                 }
 
                 // If cache is expired or empty, retrieve from Key Vault
-                _logger?.LogDebug("Fetching secret '{SecretName}' from Key Vault", secretName);
+                _logger?.LogDebug("Fetching secret from Key Vault");
 
                 var response = await _secretClient.GetSecretAsync(
                     name: secretName,
@@ -175,7 +175,7 @@ namespace vv.Infrastructure.Configuration
                 // Cache the secret with expiration
                 _secretCache.CacheSecretWithExpiration(secretName, value, expiresOn);
 
-                _logger?.LogDebug("Successfully retrieved and cached secret '{SecretName}'", secretName);
+                _logger?.LogDebug("Successfully retrieved and cached secret");
                 return value;
             }
             catch (RequestFailedException ex) when (ex.Status == (int)HttpStatusCode.NotFound)
