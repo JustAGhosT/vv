@@ -109,11 +109,13 @@ public class SaveDocumentToDb
         {
             requestData = System.Text.Json.JsonSerializer.Deserialize<TDto>(requestBody, new System.Text.Json.JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true,
-                MaxDepth = 32, // Prevent deeply nested JSON attacks
-                PropertyNameCaseInsensitive = true,
-                AllowTrailingCommas = false, // Strict JSON parsing
-                ReadCommentHandling = JsonCommentHandling.Disallow // Disallow comments for security
+ requestData = System.Text.Json.JsonSerializer.Deserialize<TDto>(requestBody, new System.Text.Json.JsonSerializerOptions
+ {
+     MaxDepth = 32, // Prevent deeply nested JSON attacks
+     PropertyNameCaseInsensitive = true,
+     AllowTrailingCommas = false, // Strict JSON parsing
+     ReadCommentHandling = JsonCommentHandling.Disallow // Disallow comments for security
+ });
             });
             if (requestData == null)
                 throw new ArgumentNullException(nameof(requestData));
