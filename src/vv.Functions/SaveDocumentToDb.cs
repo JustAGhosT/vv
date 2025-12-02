@@ -19,6 +19,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace vv.Functions;
 
+/// <summary>
+/// Exception thrown when a request body exceeds the maximum allowed size.
+/// </summary>
+public sealed class RequestBodyTooLargeException : Exception
+{
+    public long MaxSize { get; }
+    public long ActualSize { get; }
+
+    public RequestBodyTooLargeException(long maxSize, long actualSize)
+        : base($"Request body size {actualSize} exceeds maximum allowed size of {maxSize} bytes.")
+    {
+        MaxSize = maxSize;
+        ActualSize = actualSize;
+    }
+}
+
 public class SaveDocumentToDb
 {
     private readonly ILogger<SaveDocumentToDb> _logger;
@@ -101,7 +117,7 @@ public class SaveDocumentToDb
         {
             requestBody = await ReadRequestBodyWithLimitAsync(req.Body, maxRequestBodySize);
         }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("exceeds maximum"))
+        catch (RequestBodyTooLargeException)
         {
             _logger.LogWarning("Request body exceeded maximum allowed size during streaming read");
             return new StatusCodeResult(StatusCodes.Status413PayloadTooLarge);
@@ -199,12 +215,12 @@ public class SaveDocumentToDb
     /// Reads the request body with streaming size limit enforcement.
     /// This protects against DoS attacks via chunked requests that bypass Content-Length checks.
     /// </summary>
-    private static async Task<string> ReadRequestBodyWithLimitAsync(Stream body, int maxSize)
+    private static async Task<string> ReadRequestBodyWithLimitAsync(Stream body, long maxSize)
     {
         const int bufferSize = 64 * 1024; // 64KB chunks
         using var memoryStream = new MemoryStream();
         var buffer = new byte[bufferSize];
-        int totalRead = 0;
+        long totalRead = 0;
         int bytesRead;
 
         while ((bytesRead = await body.ReadAsync(buffer, 0, buffer.Length)) > 0)
@@ -212,7 +228,7 @@ public class SaveDocumentToDb
             totalRead += bytesRead;
             if (totalRead > maxSize)
             {
-                throw new InvalidOperationException($"Request body size exceeds maximum allowed size of {maxSize} bytes.");
+                throw new RequestBodyTooLargeException(maxSize, totalRead);
             }
             await memoryStream.WriteAsync(buffer, 0, bytesRead);
         }
