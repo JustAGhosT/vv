@@ -117,9 +117,9 @@ public class SaveDocumentToDb
         {
             requestBody = await ReadRequestBodyWithLimitAsync(req.Body, maxRequestBodySize);
         }
-        catch (RequestBodyTooLargeException)
+        catch (RequestBodyTooLargeException ex)
         {
-            _logger.LogWarning("Request body exceeded maximum allowed size during streaming read");
+            _logger.LogWarning(ex, "Request body exceeded maximum allowed size during streaming read");
             return new StatusCodeResult(StatusCodes.Status413PayloadTooLarge);
         }
 

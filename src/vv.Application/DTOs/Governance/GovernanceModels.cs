@@ -5,17 +5,17 @@ namespace vv.Application.DTOs.Governance
 {
     public class GovernanceProposalDto
     {
-        public string ProposalId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Author { get; set; }
-        public string AuthorAddress { get; set; }
+        public required string ProposalId { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Author { get; set; }
+        public required string AuthorAddress { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime VotingStartsAt { get; set; }
         public DateTime VotingEndsAt { get; set; }
-        public string Status { get; set; } // Draft, Active, Passed, Failed, Executed, Cancelled
+        public required string Status { get; set; } // Draft, Active, Passed, Failed, Executed, Cancelled
         public List<ProposalActionDto> Actions { get; set; } = new();
-        public VotingResultsDto CurrentResults { get; set; }
+        public VotingResultsDto? CurrentResults { get; set; }
         public Dictionary<string, decimal> TokenThresholds { get; set; } = new(); // Token → threshold
         public int QuorumPercentage { get; set; }
         public int ApprovalThresholdPercentage { get; set; }
@@ -23,7 +23,7 @@ namespace vv.Application.DTOs.Governance
         public List<ProposalDiscussionDto> Discussions { get; set; } = new();
         public List<string> RelatedProposals { get; set; } = new();
         public Dictionary<string, string> Metadata { get; set; } = new(); // Custom metadata
-        public string IpfsHash { get; set; } // For permanent storage
+        public string? IpfsHash { get; set; } // For permanent storage
     }
 
     public class ProposalActionDto

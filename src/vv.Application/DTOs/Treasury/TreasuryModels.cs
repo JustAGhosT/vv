@@ -34,11 +34,11 @@ namespace vv.Application.DTOs.Treasury
 
     public class TaxReportDto
     {
-        public string ReportId { get; set; }
-        public string ClientId { get; set; }
+        public required string ReportId { get; set; }
+        public required string ClientId { get; set; }
         public int TaxYear { get; set; }
-        public string JurisdictionCode { get; set; }
-        public string Status { get; set; } // Draft, Final, Amended
+        public required string JurisdictionCode { get; set; }
+        public required string Status { get; set; } // Draft, Final, Amended
         public DateTime GeneratedAt { get; set; }
         public List<TaxableEventDto> TaxableEvents { get; set; } = new();
         public Dictionary<string, decimal> TotalsByCategory { get; set; } = new();
@@ -46,7 +46,7 @@ namespace vv.Application.DTOs.Treasury
         public decimal TotalTaxableLosses { get; set; }
         public decimal NetTaxableAmount { get; set; }
         public decimal EstimatedTaxLiability { get; set; }
-        public string FilingInstructions { get; set; }
+        public required string FilingInstructions { get; set; }
         public List<string> SupportingDocuments { get; set; } = new();
     }
 
