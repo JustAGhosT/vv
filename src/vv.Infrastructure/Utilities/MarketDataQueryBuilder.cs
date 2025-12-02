@@ -12,6 +12,52 @@ namespace vv.Infrastructure.Utilities
         private Expression<Func<T, bool>> _predicate = e => true;
 
         /// <summary>
+        /// Creates a specification for market data with all common parameters
+        /// </summary>
+        public static MarketDataQueryBuilder<T> ForMarketData(
+            string dataType,
+            string assetClass,
+            string assetId,
+            string region,
+            DateOnly asOfDate,
+            string documentType)
+        {
+            return new MarketDataQueryBuilder<T>()
+                .WithDataType(dataType)
+                .WithAssetClass(assetClass)
+                .WithAssetId(assetId)
+                .WithRegion(region)
+                .WithAsOfDate(asOfDate)
+                .WithDocumentType(documentType);
+        }
+
+        /// <summary>
+        /// Creates a specification for range queries with required and optional parameters
+        /// </summary>
+        public static MarketDataQueryBuilder<T> ForRangeQuery(
+            string dataType,
+            string assetClass,
+            string? assetId = null,
+            DateOnly? fromDate = null,
+            DateOnly? toDate = null)
+        {
+            var builder = new MarketDataQueryBuilder<T>()
+                .WithDataType(dataType)
+                .WithAssetClass(assetClass);
+
+            if (!string.IsNullOrEmpty(assetId))
+                builder.WithAssetId(assetId);
+
+            if (fromDate.HasValue)
+                builder.WithFromDate(fromDate.Value);
+
+            if (toDate.HasValue)
+                builder.WithToDate(toDate.Value);
+
+            return builder;
+        }
+
+        /// <summary>
         /// Adds a data type filter
         /// </summary>
         public MarketDataQueryBuilder<T> WithDataType(string dataType)

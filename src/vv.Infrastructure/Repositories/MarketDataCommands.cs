@@ -4,6 +4,7 @@ using vv.Domain.Models;
 using vv.Domain.Repositories;
 using vv.Domain.Repositories.Components;
 using vv.Domain.Specifications;
+using vv.Infrastructure.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -43,14 +44,10 @@ namespace vv.Infrastructure.Repositories
                 marketData.DataType, marketData.AssetClass, marketData.AssetId, marketData.Region,
                 marketData.AsOfDate, marketData.DocumentType, marketData.Version);
 
-            // Use specification pattern
-            var spec = new MarketDataSpecification()
-                .WithDataType(marketData.DataType)
-                .WithAssetClass(marketData.AssetClass)
-                .WithAssetId(marketData.AssetId)
-                .WithRegion(marketData.Region)
-                .WithAsOfDate(marketData.AsOfDate)
-                .WithDocumentType(marketData.DocumentType);
+            // Use shared factory method for specification
+            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+                marketData.DataType, marketData.AssetClass, marketData.AssetId,
+                marketData.Region, marketData.AsOfDate, marketData.DocumentType);
 
             // Save the entity with versioning
             var result = await _versioning.SaveVersionedEntityAsync(marketData, spec, cancellationToken);
