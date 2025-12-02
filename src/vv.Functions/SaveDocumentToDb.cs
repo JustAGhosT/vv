@@ -19,6 +19,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace vv.Functions;
 
+/// <summary>
+/// Exception thrown when a request body exceeds the maximum allowed size.
+/// </summary>
+public sealed class RequestBodyTooLargeException : Exception
+{
+    public long MaxSize { get; }
+    public long ActualSize { get; }
+
+    public RequestBodyTooLargeException(long maxSize, long actualSize)
+        : base($"Request body size {actualSize} exceeds maximum allowed size of {maxSize} bytes.")
+    {
+        MaxSize = maxSize;
+        ActualSize = actualSize;
+    }
+}
+
 public class SaveDocumentToDb
 {
     private readonly ILogger<SaveDocumentToDb> _logger;
@@ -86,15 +102,26 @@ public class SaveDocumentToDb
     {
         // Validate request body size to prevent DoS attacks
         const int maxRequestBodySize = 10 * 1024 * 1024; // 10MB limit
+        
+        // Early rejection if Content-Length header is present and exceeds limit
         if (req.ContentLength.HasValue && req.ContentLength.Value > maxRequestBodySize)
         {
             _logger.LogWarning("Request body size {Size} exceeds maximum allowed size {MaxSize}", 
                 req.ContentLength.Value, maxRequestBodySize);
-            return new BadRequestObjectResult("Request body too large.");
+            return new StatusCodeResult(StatusCodes.Status413PayloadTooLarge);
         }
 
-        using var reader = new StreamReader(req.Body);
-        string requestBody = await reader.ReadToEndAsync();
+        // Read body with streaming size enforcement for chunked requests or missing Content-Length
+        string requestBody;
+        try
+        {
+            requestBody = await ReadRequestBodyWithLimitAsync(req.Body, maxRequestBodySize);
+        }
+        catch (RequestBodyTooLargeException)
+        {
+            _logger.LogWarning("Request body exceeded maximum allowed size during streaming read");
+            return new StatusCodeResult(StatusCodes.Status413PayloadTooLarge);
+        }
 
         // Schema validation
         var validated = JsonSchemaValidatorRegistry.Validator.Validate(dataType, assetClass, schemaVersion, requestBody, out var errorMessage);
@@ -109,13 +136,10 @@ public class SaveDocumentToDb
         {
             requestData = System.Text.Json.JsonSerializer.Deserialize<TDto>(requestBody, new System.Text.Json.JsonSerializerOptions
             {
- requestData = System.Text.Json.JsonSerializer.Deserialize<TDto>(requestBody, new System.Text.Json.JsonSerializerOptions
- {
-     MaxDepth = 32, // Prevent deeply nested JSON attacks
-     PropertyNameCaseInsensitive = true,
-     AllowTrailingCommas = false, // Strict JSON parsing
-     ReadCommentHandling = JsonCommentHandling.Disallow // Disallow comments for security
- });
+                MaxDepth = 32, // Prevent deeply nested JSON attacks
+                PropertyNameCaseInsensitive = true,
+                AllowTrailingCommas = false, // Strict JSON parsing
+                ReadCommentHandling = System.Text.Json.JsonCommentHandling.Disallow // Disallow comments for security
             });
             if (requestData == null)
                 throw new ArgumentNullException(nameof(requestData));
@@ -185,5 +209,32 @@ public class SaveDocumentToDb
         }
         _logger.LogError("Error saving document (null result).");
         return new BadRequestObjectResult("Error saving document.");
+    }
+
+    /// <summary>
+    /// Reads the request body with streaming size limit enforcement.
+    /// This protects against DoS attacks via chunked requests that bypass Content-Length checks.
+    /// </summary>
+    private static async Task<string> ReadRequestBodyWithLimitAsync(Stream body, long maxSize)
+    {
+        const int bufferSize = 64 * 1024; // 64KB chunks
+        using var memoryStream = new MemoryStream();
+        var buffer = new byte[bufferSize];
+        long totalRead = 0;
+        int bytesRead;
+
+        while ((bytesRead = await body.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        {
+            totalRead += bytesRead;
+            if (totalRead > maxSize)
+            {
+                throw new RequestBodyTooLargeException(maxSize, totalRead);
+            }
+            await memoryStream.WriteAsync(buffer, 0, bytesRead);
+        }
+
+        memoryStream.Position = 0;
+        using var reader = new StreamReader(memoryStream);
+        return await reader.ReadToEndAsync();
     }
 }
