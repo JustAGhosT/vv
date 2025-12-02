@@ -5,28 +5,28 @@ namespace vv.Application.DTOs.Treasury
 {
     public class TreasuryIntegrationDto
     {
-        public string IntegrationId { get; set; }
-        public string CompanyId { get; set; }
-        public string IntegrationType { get; set; } // API, Webhook, File Export
-        public string Status { get; set; }
+        public required string IntegrationId { get; set; }
+        public required string CompanyId { get; set; }
+        public required string IntegrationType { get; set; } // API, Webhook, File Export
+        public required string Status { get; set; }
         public DateTime LastSyncTime { get; set; }
         public List<string> SyncedSystems { get; set; } = new(); // ERP, Accounting Software, etc.
         public Dictionary<string, string> ConfigurationParameters { get; set; } = new();
         public bool AutomaticReporting { get; set; }
         public List<string> ReportRecipients { get; set; } = new();
-        public string ApiKey { get; set; } // Masked for security
+        public required string ApiKey { get; set; } // Masked for security
     }
 
     public class TreasuryReportDto
     {
-        public string ReportId { get; set; }
-        public string CompanyId { get; set; }
-        public string ReportType { get; set; } // Monthly Statement, Tax Report, etc.
+        public required string ReportId { get; set; }
+        public required string CompanyId { get; set; }
+        public required string ReportType { get; set; } // Monthly Statement, Tax Report, etc.
         public DateTime ReportDate { get; set; }
         public DateTime PeriodStart { get; set; }
         public DateTime PeriodEnd { get; set; }
-        public string Status { get; set; } // Generated, Delivered, Viewed
-        public string FileUrl { get; set; }
+        public required string Status { get; set; } // Generated, Delivered, Viewed
+        public required string FileUrl { get; set; }
         public List<string> Recipients { get; set; } = new();
         public Dictionary<string, decimal> KeyMetrics { get; set; } = new();
         public List<string> Footnotes { get; set; } = new();
@@ -52,25 +52,25 @@ namespace vv.Application.DTOs.Treasury
 
     public class TaxableEventDto
     {
-        public string EventId { get; set; }
-        public string Type { get; set; } // Yield, Trade, Fee, Interest
+        public required string EventId { get; set; }
+        public required string Type { get; set; } // Yield, Trade, Fee, Interest
         public DateTime Date { get; set; }
-        public string AssetAcquired { get; set; }
+        public required string AssetAcquired { get; set; }
         public decimal AmountAcquired { get; set; }
         public decimal ValueAtAcquisitionUsd { get; set; }
-        public string AssetDisposed { get; set; }
+        public required string AssetDisposed { get; set; }
         public decimal AmountDisposed { get; set; }
         public decimal ValueAtDisposalUsd { get; set; }
         public decimal GainLossUsd { get; set; }
         public bool IsTaxable { get; set; }
-        public string TaxTreatment { get; set; } // Capital Gain, Income, etc.
-        public string TransactionId { get; set; }
-        public string Notes { get; set; }
+        public required string TaxTreatment { get; set; } // Capital Gain, Income, etc.
+        public required string TransactionId { get; set; }
+        public required string Notes { get; set; }
     }
 
     public class TreasuryLimitsDto
     {
-        public string ClientId { get; set; }
+        public required string ClientId { get; set; }
         public Dictionary<string, decimal> DailyWithdrawalLimits { get; set; } = new(); // Asset → amount
         public Dictionary<string, decimal> MonthlyWithdrawalLimits { get; set; } = new();
         public decimal MaxSingleTransactionUsd { get; set; }

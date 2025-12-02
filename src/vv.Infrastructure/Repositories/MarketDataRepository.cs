@@ -51,14 +51,9 @@ namespace vv.Infrastructure.Repositories
                 "Retrieving latest market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, Region={Region}, AsOf={AsOf}, DocType={DocType}",
                 dataType, assetClass, assetId, region, asOfDate, documentType);
 
-            // Use specification pattern instead of direct predicates
-            var spec = new MarketDataSpecification()
-                .WithDataType(dataType)
-                .WithAssetClass(assetClass)
-                .WithAssetId(assetId)
-                .WithRegion(region)
-                .WithAsOfDate(asOfDate)
-                .WithDocumentType(documentType);
+            // Use shared factory method for specification
+            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+                dataType, assetClass, assetId, region, asOfDate, documentType);
 
             // Use the versioning component
             var (entity, _) = await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
@@ -93,22 +88,12 @@ namespace vv.Infrastructure.Repositories
             DateOnly? fromDateOnly = fromDate.HasValue ? DateOnly.FromDateTime(fromDate.Value) : null;
             DateOnly? toDateOnly = toDate.HasValue ? DateOnly.FromDateTime(toDate.Value) : null;
 
-            // Use specification pattern
-            var spec = new MarketDataSpecification()
-                .WithDataType(dataType)
-                .WithAssetClass(assetClass);
-
-            if (!string.IsNullOrEmpty(assetId))
-                spec.WithAssetId(assetId);
-
-            if (fromDateOnly.HasValue)
-                spec.WithFromDate(fromDateOnly.Value);
-
-            if (toDateOnly.HasValue)
-                spec.WithToDate(toDateOnly.Value);
+            // Use shared factory method for specification
+            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForRangeQuery(
+                dataType, assetClass, assetId, fromDateOnly, toDateOnly);
 
             // Delegate to repository component
-            return await _repository.QueryAsync(spec.ToExpression(), cancellationToken: cancellationToken);
+            return await _repository.QueryAsync(spec.Build(), cancellationToken: cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -126,14 +111,9 @@ namespace vv.Infrastructure.Repositories
                 "Retrieving specific version of market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, Region={Region}, AsOf={AsOf}, DocType={DocType}, Version={Version}",
                 dataType, assetClass, assetId, region, asOfDate, documentType, version);
 
-            // Use specification pattern
-            var spec = new MarketDataSpecification()
-                .WithDataType(dataType)
-                .WithAssetClass(assetClass)
-                .WithAssetId(assetId)
-                .WithRegion(region)
-                .WithAsOfDate(asOfDate)
-                .WithDocumentType(documentType);
+            // Use shared factory method for specification
+            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+                dataType, assetClass, assetId, region, asOfDate, documentType);
 
             // Delegate to versioning component
             return await _versioning.GetBySpecifiedVersionAsync(spec, version, cancellationToken);
@@ -153,14 +133,9 @@ namespace vv.Infrastructure.Repositories
                 "Retrieving latest version of market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, Region={Region}, AsOf={AsOf}, DocType={DocType}",
                 dataType, assetClass, assetId, region, asOfDate, documentType);
 
-            // Use specification pattern
-            var spec = new MarketDataSpecification()
-                .WithDataType(dataType)
-                .WithAssetClass(assetClass)
-                .WithAssetId(assetId)
-                .WithRegion(region)
-                .WithAsOfDate(asOfDate)
-                .WithDocumentType(documentType);
+            // Use shared factory method for specification
+            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+                dataType, assetClass, assetId, region, asOfDate, documentType);
 
             // Delegate to versioning component
             return await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
@@ -174,14 +149,10 @@ namespace vv.Infrastructure.Repositories
                 marketData.DataType, marketData.AssetClass, marketData.AssetId, marketData.Region,
                 marketData.AsOfDate, marketData.DocumentType, marketData.Version);
 
-            // Use specification pattern
-            var spec = new MarketDataSpecification()
-                .WithDataType(marketData.DataType)
-                .WithAssetClass(marketData.AssetClass)
-                .WithAssetId(marketData.AssetId)
-                .WithRegion(marketData.Region)
-                .WithAsOfDate(marketData.AsOfDate)
-                .WithDocumentType(marketData.DocumentType);
+            // Use shared factory method for specification
+            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+                marketData.DataType, marketData.AssetClass, marketData.AssetId, 
+                marketData.Region, marketData.AsOfDate, marketData.DocumentType);
 
             // Delegate to versioning component
             var result = await _versioning.SaveVersionedEntityAsync(marketData, spec);
@@ -201,22 +172,12 @@ namespace vv.Infrastructure.Repositories
                 "Querying market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, FromDate={FromDate}, ToDate={ToDate}",
                 dataType, assetClass, assetId ?? "any", fromDate, toDate);
 
-            // Use specification pattern
-            var spec = new MarketDataSpecification()
-                .WithDataType(dataType)
-                .WithAssetClass(assetClass);
-
-            if (!string.IsNullOrEmpty(assetId))
-                spec.WithAssetId(assetId);
-
-            if (fromDate.HasValue)
-                spec.WithFromDate(fromDate.Value);
-
-            if (toDate.HasValue)
-                spec.WithToDate(toDate.Value);
+            // Use shared factory method for specification
+            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForRangeQuery(
+                dataType, assetClass, assetId, fromDate, toDate);
 
             // Delegate to repository component
-            return await _repository.QueryAsync(spec.ToExpression(), cancellationToken: cancellationToken);
+            return await _repository.QueryAsync(spec.Build(), cancellationToken: cancellationToken);
         }
 
         // Domain-specific method examples
