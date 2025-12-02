@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
 using vv.Domain.Repositories.Components;
-using vv.Domain.Specifications;
 using vv.Infrastructure.Utilities;
 using System;
 using System.Collections.Generic;
@@ -46,11 +45,11 @@ namespace vv.Infrastructure.Repositories
                 dataType, assetClass, assetId, region, asOfDate, documentType);
 
             // Use shared factory method for specification
-            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
-                dataType, assetClass, assetId, region, asOfDate, documentType);
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+                dataType, assetClass, assetId, region, asOfDate, documentType).Build();
 
             // Use the versioning component
-            var (entity, _) = await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
+            var (entity, _) = await _versioning.GetByLatestVersionAsync(predicate, cancellationToken);
             return entity;
         }
 
@@ -106,11 +105,11 @@ namespace vv.Infrastructure.Repositories
                 dataType, assetClass, assetId, region, asOfDate, documentType, version);
 
             // Use shared factory method for specification
-            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
-                dataType, assetClass, assetId, region, asOfDate, documentType);
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+                dataType, assetClass, assetId, region, asOfDate, documentType).Build();
 
             // Delegate to versioning component
-            return await _versioning.GetBySpecifiedVersionAsync(spec, version, cancellationToken);
+            return await _versioning.GetBySpecifiedVersionAsync(predicate, version, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -128,11 +127,11 @@ namespace vv.Infrastructure.Repositories
                 dataType, assetClass, assetId, region, asOfDate, documentType);
 
             // Use shared factory method for specification
-            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
-                dataType, assetClass, assetId, region, asOfDate, documentType);
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+                dataType, assetClass, assetId, region, asOfDate, documentType).Build();
 
             // Delegate to versioning component
-            return await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
+            return await _versioning.GetByLatestVersionAsync(predicate, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -164,10 +163,11 @@ namespace vv.Infrastructure.Repositories
             CancellationToken cancellationToken = default)
         {
             // Domain-specific method implementation
-            var spec = MarketDataSpecification.ForCurrencyPair(baseCurrency, quoteCurrency)
-                .WithAsOfDate(asOfDate);
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.ForCurrencyPair(baseCurrency, quoteCurrency)
+                .WithAsOfDate(asOfDate)
+                .Build();
 
-            var (entity, _) = await _versioning.GetByLatestVersionAsync(spec, cancellationToken);
+            var (entity, _) = await _versioning.GetByLatestVersionAsync(predicate, cancellationToken);
             return FxSpotPriceRate.FromEntity(entity);
         }
 
@@ -180,11 +180,12 @@ namespace vv.Infrastructure.Repositories
             CancellationToken cancellationToken = default)
         {
             // Domain-specific method implementation
-            var spec = MarketDataSpecification.ForCurrencyPair(baseCurrency, quoteCurrency)
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.ForCurrencyPair(baseCurrency, quoteCurrency)
                 .WithFromDate(fromDate)
-                .WithToDate(toDate);
+                .WithToDate(toDate)
+                .Build();
 
-            return await _repository.QueryAsync(spec.ToExpression(), cancellationToken: cancellationToken);
+            return await _repository.QueryAsync(predicate, cancellationToken: cancellationToken);
         }
     }
 }
