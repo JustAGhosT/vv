@@ -60,14 +60,22 @@ namespace vv.Infrastructure.Utilities
         /// <summary>
         /// Creates a specification for currency pair queries with FX data type and spot asset class
         /// </summary>
+        /// <param name="baseCurrency">The base currency code (e.g., "USD")</param>
+        /// <param name="quoteCurrency">The quote currency code (e.g., "EUR")</param>
+        /// <exception cref="ArgumentException">Thrown when baseCurrency or quoteCurrency is null or whitespace</exception>
         public static MarketDataQueryBuilder<T> ForCurrencyPair(
             string baseCurrency,
             string quoteCurrency)
         {
+            if (string.IsNullOrWhiteSpace(baseCurrency))
+                throw new ArgumentException("Base currency cannot be null or whitespace", nameof(baseCurrency));
+            if (string.IsNullOrWhiteSpace(quoteCurrency))
+                throw new ArgumentException("Quote currency cannot be null or whitespace", nameof(quoteCurrency));
+
             string assetId = $"{baseCurrency}{quoteCurrency}".ToLowerInvariant();
             return new MarketDataQueryBuilder<T>()
-                .WithDataType("FX")
-                .WithAssetClass("Spot")
+                .WithDataType(DataTypes.PriceSpot)
+                .WithAssetClass(AssetClass.Fx)
                 .WithAssetId(assetId);
         }
 
