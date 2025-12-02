@@ -58,6 +58,20 @@ namespace vv.Infrastructure.Utilities
         }
 
         /// <summary>
+        /// Creates a specification for currency pair queries with FX data type and spot asset class
+        /// </summary>
+        public static MarketDataQueryBuilder<T> ForCurrencyPair(
+            string baseCurrency,
+            string quoteCurrency)
+        {
+            string assetId = $"{baseCurrency}{quoteCurrency}".ToLowerInvariant();
+            return new MarketDataQueryBuilder<T>()
+                .WithDataType("FX")
+                .WithAssetClass("Spot")
+                .WithAssetId(assetId);
+        }
+
+        /// <summary>
         /// Adds a data type filter
         /// </summary>
         public MarketDataQueryBuilder<T> WithDataType(string dataType)
