@@ -9,12 +9,11 @@ using Azure.Messaging;
 using Azure.Messaging.EventGrid;
 using Microsoft.Extensions.Logging;
 using vv.Domain.Configuration;
-using vv.Domain.Events;
 using vv.Domain.Models;
 
 namespace vv.Infrastructure.Events
 {
-    public class EventGridPublisher : IEventPublisher
+    public class EventGridPublisher : vv.Domain.Events.IEventPublisher
     {
         private readonly EventGridPublisherClient _client;
         private readonly ILogger<EventGridPublisher> _logger;
@@ -211,7 +210,7 @@ namespace vv.Infrastructure.Events
             if (marketData == null)
                 throw new ArgumentNullException(nameof(marketData));
 
-            var eventType = (marketData.Version.GetValueOrDefault() > 1)
+            var eventType = (marketData.Version > 1)
                 ? "vv.DataChanged"
                 : "vv.DataCreated";
 

@@ -42,7 +42,7 @@ namespace vv.Infrastructure.Mapping
             var domain = new FxSpotPriceData
             {
                 SchemaVersion = dto.SchemaVersion,
-                Version = dto.Version,
+                Version = dto.Version ?? 1,
                 AssetId = dto.AssetId, // This will be auto-normalized to lowercase
                 DisplayAssetId = dto.AssetId, // Preserve the original case
                 AssetClass = dto.AssetClass,

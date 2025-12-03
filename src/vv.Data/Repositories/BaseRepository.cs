@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using vv.Domain.Events;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
@@ -16,11 +15,11 @@ namespace vv.Data.Repositories
     /// </summary>
     public abstract class BaseRepository<T> : IRepository<T> where T : IMarketDataEntity
     {
-        protected readonly IMediator? _mediator;
+        protected readonly IEventPublisher? _eventPublisher;
 
-        protected BaseRepository(IMediator? mediator = null)
+        protected BaseRepository(IEventPublisher? eventPublisher = null)
         {
-            _mediator = mediator;
+            _eventPublisher = eventPublisher;
         }
 
         // Abstract methods that concrete implementations must provide
@@ -47,25 +46,25 @@ namespace vv.Data.Repositories
 
         protected async Task PublishEntityCreatedEventAsync(T entity, CancellationToken cancellationToken = default)
         {
-            if (_mediator != null)
+            if (_eventPublisher != null)
             {
-                await _mediator.Publish(new EntityCreatedEvent<T>(entity), cancellationToken);
+                await _eventPublisher.PublishAsync(new EntityCreatedEvent<T>(entity), cancellationToken: cancellationToken);
             }
         }
 
         protected async Task PublishEntityUpdatedEventAsync(T entity, CancellationToken cancellationToken = default)
         {
-            if (_mediator != null)
+            if (_eventPublisher != null)
             {
-                await _mediator.Publish(new EntityUpdatedEvent<T>(entity), cancellationToken);
+                await _eventPublisher.PublishAsync(new EntityUpdatedEvent<T>(entity), cancellationToken: cancellationToken);
             }
         }
 
         protected async Task PublishEntityDeletedEventAsync(string id, CancellationToken cancellationToken = default)
         {
-            if (_mediator != null)
+            if (_eventPublisher != null)
             {
-                await _mediator.Publish(new EntityDeletedEvent<T>(id), cancellationToken);
+                await _eventPublisher.PublishAsync(new EntityDeletedEvent<T>(id), cancellationToken: cancellationToken);
             }
         }
     }

@@ -20,12 +20,12 @@ namespace vv.Infrastructure.Repositories
         private readonly ILogger<MarketDataCommands> _logger;
         private readonly IRepository<FxSpotPriceData> _repository;
         private readonly IVersioningCapability<FxSpotPriceData> _versioning;
-        private readonly IEventPublisher? _eventPublisher;
+        private readonly vv.Domain.Events.IEventPublisher? _eventPublisher;
 
         public MarketDataCommands(
             IRepository<FxSpotPriceData> repository,
             IVersioningCapability<FxSpotPriceData> versioning,
-            IEventPublisher? eventPublisher,
+            vv.Domain.Events.IEventPublisher? eventPublisher,
             ILogger<MarketDataCommands> logger)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
@@ -44,13 +44,13 @@ namespace vv.Infrastructure.Repositories
                 marketData.DataType, marketData.AssetClass, marketData.AssetId, marketData.Region,
                 marketData.AsOfDate, marketData.DocumentType, marketData.Version);
 
-            // Use shared factory method for specification
-            var spec = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
+            // Use shared factory method for specification and build the expression
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.ForMarketData(
                 marketData.DataType, marketData.AssetClass, marketData.AssetId,
-                marketData.Region, marketData.AsOfDate, marketData.DocumentType);
+                marketData.Region, marketData.AsOfDate, marketData.DocumentType).Build();
 
             // Save the entity with versioning
-            var result = await _versioning.SaveVersionedEntityAsync(marketData, spec, cancellationToken);
+            var result = await _versioning.SaveVersionedEntityAsync(marketData, predicate, cancellationToken);
 
             // Publish event if available
             if (_eventPublisher != null)
@@ -60,7 +60,7 @@ namespace vv.Infrastructure.Repositories
                     EntityId = result.Id,
                     EntityType = typeof(FxSpotPriceData).Name,
                     Timestamp = DateTime.UtcNow
-                }, cancellationToken);
+                }, cancellationToken: cancellationToken);
             }
 
             return result.Id;
@@ -87,7 +87,7 @@ namespace vv.Infrastructure.Repositories
                     EntityType = typeof(FxSpotPriceData).Name,
                     IsSoftDelete = soft,
                     Timestamp = DateTime.UtcNow
-                }, cancellationToken);
+                }, cancellationToken: cancellationToken);
             }
 
             return result;
@@ -109,7 +109,7 @@ namespace vv.Infrastructure.Repositories
                     EntityCount = count,
                     EntityType = typeof(FxSpotPriceData).Name,
                     Timestamp = DateTime.UtcNow
-                }, cancellationToken);
+                }, cancellationToken: cancellationToken);
             }
 
             return count;
@@ -135,7 +135,8 @@ namespace vv.Infrastructure.Repositories
                 AsOfDate = asOfDate,
                 DocumentType = documentType,
                 Rate = rate,
-                // Other properties as needed
+                SchemaVersion = "1.0",
+                Version = 1
             };
 
             return await SaveAsync(marketData, cancellationToken);

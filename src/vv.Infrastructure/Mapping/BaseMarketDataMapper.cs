@@ -20,7 +20,7 @@ namespace vv.Infrastructure.Mapping
             ArgumentNullException.ThrowIfNull(domain);
 
             domain.SchemaVersion = dto.SchemaVersion;
-            domain.Version = dto.Version;
+            domain.Version = dto.Version ?? 1;
             domain.AssetId = dto.AssetId;
             domain.AssetClass = dto.AssetClass;
             domain.DataType = dto.DataType;

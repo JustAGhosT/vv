@@ -1,8 +1,9 @@
 using System;
+using MediatR;
 
 namespace vv.Domain.Events
 {
-    public abstract class DomainEvent
+    public abstract class DomainEvent : INotification
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
