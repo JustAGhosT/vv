@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -15,24 +14,18 @@ namespace vv.Infrastructure.Repositories
     /// <summary>
     /// Cosmos DB repository implementation for market data using composition
     /// </summary>
-    public class MarketDataRepository : IMarketDataRepository
+    public class MarketDataRepository : MarketDataRepositoryBase, IMarketDataRepository
     {
-        private readonly ILogger<MarketDataRepository> _logger;
-        private readonly IRepository<FxSpotPriceData> _repository;
-        private readonly IVersioningCapability<FxSpotPriceData> _versioning;
-
         public MarketDataRepository(
             IRepository<FxSpotPriceData> repository,
             IVersioningCapability<FxSpotPriceData> versioning,
             ILogger<MarketDataRepository> logger)
+            : base(repository, versioning, logger)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _versioning = versioning ?? throw new ArgumentNullException(nameof(versioning));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <inheritdoc/>
-        public async Task<FxSpotPriceData?> GetLatestMarketDataAsync(
+        public Task<FxSpotPriceData?> GetLatestMarketDataAsync(
             string dataType,
             string assetClass,
             string assetId,
@@ -41,14 +34,7 @@ namespace vv.Infrastructure.Repositories
             string documentType,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation(
-                "Retrieving latest market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, Region={Region}, AsOf={AsOf}, DocType={DocType}",
-                dataType, assetClass, assetId, region, asOfDate, documentType);
-
-            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.BuildMarketDataPredicate(
-                dataType, assetClass, assetId, region, asOfDate, documentType);
-            var (entity, _) = await _versioning.GetByLatestVersionAsync(predicate, cancellationToken);
-            return entity;
+            return GetLatestMarketDataInternalAsync(dataType, assetClass, assetId, region, asOfDate, documentType, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -58,16 +44,16 @@ namespace vv.Infrastructure.Repositories
         /// </remarks>
         public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(Func<FxSpotPriceData, bool> predicate)
         {
-            _logger.LogInformation("Executing predicate query on market data");
+            Logger.LogInformation("Executing predicate query on market data");
 
-            var results = await _repository.GetAllAsync(cancellationToken: default);
+            var results = await Repository.GetAllAsync(cancellationToken: default);
             return results.Where(predicate);
         }
 
         /// <inheritdoc/>
         public async Task<FxSpotPriceData> CreateMarketDataAsync(FxSpotPriceData data)
         {
-            _logger.LogInformation(
+            Logger.LogInformation(
                 "Creating market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}",
                 data.DataType, data.AssetClass, data.AssetId);
 
@@ -75,28 +61,28 @@ namespace vv.Infrastructure.Repositories
                 data.DataType, data.AssetClass, data.AssetId, 
                 data.Region, data.AsOfDate, data.DocumentType);
 
-            return await _versioning.SaveVersionedEntityAsync(data, predicate);
+            return await Versioning.SaveVersionedEntityAsync(data, predicate);
         }
 
         /// <inheritdoc/>
         public async Task<FxSpotPriceData> UpdateMarketDataAsync(FxSpotPriceData data)
         {
-            _logger.LogInformation(
+            Logger.LogInformation(
                 "Updating market data: Id={Id}, DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}",
                 data.Id, data.DataType, data.AssetClass, data.AssetId);
 
-            return await _repository.UpdateAsync(data);
+            return await Repository.UpdateAsync(data);
         }
 
         /// <inheritdoc/>
         public async Task<bool> DeleteMarketDataAsync(string id)
         {
-            _logger.LogInformation("Deleting market data: Id={Id}", id);
-            return await _repository.DeleteAsync(id);
+            Logger.LogInformation("Deleting market data: Id={Id}", id);
+            return await Repository.DeleteAsync(id);
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<FxSpotPriceData>> QueryByRangeAsync(
+        public Task<IEnumerable<FxSpotPriceData>> QueryByRangeAsync(
             string dataType,
             string assetClass,
             string? assetId = null,
@@ -104,16 +90,10 @@ namespace vv.Infrastructure.Repositories
             DateTime? toDate = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation(
-                "Querying market data by range: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, FromDate={FromDate}, ToDate={ToDate}",
-                dataType, assetClass, assetId ?? "any", fromDate, toDate);
-
             DateOnly? fromDateOnly = fromDate.HasValue ? DateOnly.FromDateTime(fromDate.Value) : null;
             DateOnly? toDateOnly = toDate.HasValue ? DateOnly.FromDateTime(toDate.Value) : null;
 
-            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.BuildRangeQueryPredicate(
-                dataType, assetClass, assetId, fromDateOnly, toDateOnly);
-            return await _repository.QueryAsync(predicate, cancellationToken: cancellationToken);
+            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDateOnly, toDateOnly, cancellationToken);
         }
     }
 }
