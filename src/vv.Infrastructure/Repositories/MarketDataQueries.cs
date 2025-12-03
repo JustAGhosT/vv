@@ -55,10 +55,7 @@ namespace vv.Infrastructure.Repositories
             DateTime? toDate = null,
             CancellationToken cancellationToken = default)
         {
-            DateOnly? fromDateOnly = fromDate.HasValue ? DateOnly.FromDateTime(fromDate.Value) : null;
-            DateOnly? toDateOnly = toDate.HasValue ? DateOnly.FromDateTime(toDate.Value) : null;
-
-            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDateOnly, toDateOnly, cancellationToken);
+            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDate, toDate, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -82,9 +79,10 @@ namespace vv.Infrastructure.Repositories
             string assetId,
             string region,
             DateOnly asOfDate,
-            string documentType)
+            string documentType,
+            CancellationToken cancellationToken = default)
         {
-            return GetByLatestVersionInternalAsync(dataType, assetClass, assetId, region, asOfDate, documentType, default);
+            return GetByLatestVersionInternalAsync(dataType, assetClass, assetId, region, asOfDate, documentType, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -93,9 +91,13 @@ namespace vv.Infrastructure.Repositories
             string assetClass,
             string? assetId = null,
             DateOnly? fromDate = null,
-            DateOnly? toDate = null)
+            DateOnly? toDate = null,
+            CancellationToken cancellationToken = default)
         {
-            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDate, toDate, default);
+            DateTime? fromDateTime = fromDate.HasValue ? fromDate.Value.ToDateTime(TimeOnly.MinValue) : null;
+            DateTime? toDateTime = toDate.HasValue ? toDate.Value.ToDateTime(TimeOnly.MaxValue) : null;
+
+            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDateTime, toDateTime, cancellationToken);
         }
 
         /// <inheritdoc/>
