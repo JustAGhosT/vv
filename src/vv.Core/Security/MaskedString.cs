@@ -11,7 +11,7 @@ namespace vv.Core.Security
     [JsonConverter(typeof(MaskedStringJsonConverter))]
     public sealed class MaskedString : IEquatable<MaskedString>
     {
-        private const string MaskedValue = "***";
+        internal const string MaskedValue = "***";
         private readonly string _value;
 
         /// <summary>
@@ -78,8 +78,6 @@ namespace vv.Core.Security
     /// </summary>
     public sealed class MaskedStringJsonConverter : JsonConverter<MaskedString>
     {
-        private const string MaskedValue = "***";
-
         public override MaskedString? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var value = reader.GetString();
@@ -89,7 +87,7 @@ namespace vv.Core.Security
         public override void Write(Utf8JsonWriter writer, MaskedString value, JsonSerializerOptions options)
         {
             // Always write the masked value - never expose the secret
-            writer.WriteStringValue(MaskedValue);
+            writer.WriteStringValue(MaskedString.MaskedValue);
         }
     }
 }
