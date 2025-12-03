@@ -152,11 +152,11 @@ namespace vv.Application.DTOs.Wallet
         public DateTime InitiatedAt { get; set; }
         public required string InitiatedBy { get; set; }
         public DateTime? CompletedAt { get; set; }
-        public required string TransactionHash { get; set; }
+        public string? TransactionHash { get; set; }
         public int Confirmations { get; set; }
         public List<TransactionApprovalDto> Approvals { get; set; } = new();
-        public required string Memo { get; set; }
-        public required string Purpose { get; set; } // Business context
+        public string? Memo { get; set; }
+        public string? Purpose { get; set; } // Business context
         public Dictionary<string, string> Metadata { get; set; } = new();
         public bool IsOnChainVerified { get; set; }
     }

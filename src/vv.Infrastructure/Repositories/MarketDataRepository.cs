@@ -87,10 +87,7 @@ namespace vv.Infrastructure.Repositories
             DateTime? toDate = null,
             CancellationToken cancellationToken = default)
         {
-            DateOnly? fromDateOnly = fromDate.HasValue ? DateOnly.FromDateTime(fromDate.Value) : null;
-            DateOnly? toDateOnly = toDate.HasValue ? DateOnly.FromDateTime(toDate.Value) : null;
-
-            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDateOnly, toDateOnly, cancellationToken);
+            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDate, toDate, cancellationToken);
         }
     }
 }

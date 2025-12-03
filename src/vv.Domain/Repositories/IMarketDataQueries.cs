@@ -54,7 +54,8 @@ public interface IMarketDataQueries
         string assetId,
         string region,
         DateOnly asOfDate,
-        string documentType);
+        string documentType,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets all market data that matches the specified criteria
@@ -64,7 +65,8 @@ public interface IMarketDataQueries
         string assetClass,
         string? assetId = null,
         DateOnly? fromDate = null,
-        DateOnly? toDate = null);
+        DateOnly? toDate = null,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets the latest exchange rate for a currency pair

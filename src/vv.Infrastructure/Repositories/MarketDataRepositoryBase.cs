@@ -67,21 +67,25 @@ namespace vv.Infrastructure.Repositories
         /// <summary>
         /// Queries market data within a specified date range.
         /// Shared implementation used by both MarketDataRepository and MarketDataQueries.
+        /// Accepts DateTime? to match the interface and converts to DateOnly? internally.
         /// </summary>
         protected async Task<IEnumerable<FxSpotPriceData>> QueryByRangeInternalAsync(
             string dataType,
             string assetClass,
             string? assetId,
-            DateOnly? fromDate,
-            DateOnly? toDate,
+            DateTime? fromDate,
+            DateTime? toDate,
             CancellationToken cancellationToken = default)
         {
             Logger.LogInformation(
                 "Querying market data by range: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, FromDate={FromDate}, ToDate={ToDate}",
                 dataType, assetClass, assetId ?? "any", fromDate, toDate);
 
+            DateOnly? fromDateOnly = fromDate.HasValue ? DateOnly.FromDateTime(fromDate.Value) : null;
+            DateOnly? toDateOnly = toDate.HasValue ? DateOnly.FromDateTime(toDate.Value) : null;
+
             var predicate = MarketDataQueryBuilder<FxSpotPriceData>.BuildRangeQueryPredicate(
-                dataType, assetClass, assetId, fromDate, toDate);
+                dataType, assetClass, assetId, fromDateOnly, toDateOnly);
             return await Repository.QueryAsync(predicate, cancellationToken: cancellationToken);
         }
 
