@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using vv.Core.Security;
 
 namespace vv.Application.DTOs.Wallet
 {
@@ -178,7 +179,7 @@ namespace vv.Application.DTOs.Wallet
     public class SecuritySettingsDto
     {
         public bool TwoFactorEnabled { get; set; }
-        public required string TwoFactorType { get; set; } // App, SMS, Email, Hardware
+        public string? TwoFactorType { get; set; } // App, SMS, Email, Hardware - required only when TwoFactorEnabled is true
         public bool BiometricEnabled { get; set; }
         public bool EmailNotificationsEnabled { get; set; }
         public bool PushNotificationsEnabled { get; set; }
@@ -199,7 +200,7 @@ namespace vv.Application.DTOs.Wallet
         public Dictionary<string, string> Configuration { get; set; } = new();
         public List<string> SyncedDataTypes { get; set; } = new();
         public required string SyncFrequency { get; set; } // Real-time, Hourly, Daily, etc.
-        public required string ApiKeyHash { get; set; } // Masked API key
+        public required MaskedString ApiKeyHash { get; set; } // Protected secret - always masked in serialization and ToString()
     }
 
     public class AuditConfigDto
@@ -225,7 +226,7 @@ namespace vv.Application.DTOs.Wallet
         public decimal LargeTransactionThresholdUsd { get; set; }
         public bool RequirePurposeForLargeTransactions { get; set; }
         public bool PerformBlockchainAnalysis { get; set; }
-        public required string BlockchainAnalysisProvider { get; set; }
+        public string? BlockchainAnalysisProvider { get; set; } // Required only when PerformBlockchainAnalysis is true
         public int MaxRiskScoreAllowed { get; set; } // 1-100
         public List<string> TransactionPurposeOptions { get; set; } = new();
     }
