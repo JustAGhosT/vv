@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
 using vv.Domain.Services;
-using System.Linq;
 
 namespace vv.Application.Services
 {
@@ -141,11 +143,13 @@ namespace vv.Application.Services
             return result;
         }
 
-        public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(Func<FxSpotPriceData, bool> predicate)
+        public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(
+            Expression<Func<FxSpotPriceData, bool>> predicate,
+            CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Querying market data with predicate");
+            _logger.LogInformation("Querying market data with predicate expression");
             
-            var result = await _repository.QueryAsync(predicate);
+            var result = await _repository.QueryAsync(predicate, cancellationToken);
             
             return result;
         }

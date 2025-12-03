@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using vv.Domain.Models;
 
@@ -26,11 +28,14 @@ namespace vv.Application.Services
             string documentType);
 
         /// <summary>
-        /// Queries market data based on a predicate
+        /// Queries market data based on a predicate expression
         /// </summary>
-        /// <param name="predicate">The filter predicate</param>
+        /// <param name="predicate">The filter predicate expression for database query translation</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>A collection of market data matching the criteria</returns>
-        Task<IEnumerable<FxSpotPriceData>> QueryAsync(Func<FxSpotPriceData, bool> predicate);
+        Task<IEnumerable<FxSpotPriceData>> QueryAsync(
+            Expression<Func<FxSpotPriceData, bool>> predicate,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates new market data

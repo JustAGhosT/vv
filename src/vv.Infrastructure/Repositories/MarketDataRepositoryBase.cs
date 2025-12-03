@@ -10,6 +10,18 @@ using vv.Infrastructure.Utilities;
 namespace vv.Infrastructure.Repositories
 {
     /// <summary>
+    /// Parameters that identify market data for queries.
+    /// Used to reduce parameter count in repository methods.
+    /// </summary>
+    public record MarketDataKey(
+        string DataType,
+        string AssetClass,
+        string AssetId,
+        string Region,
+        DateOnly AsOfDate,
+        string DocumentType);
+
+    /// <summary>
     /// Base class containing shared functionality for market data repositories
     /// to reduce code duplication between MarketDataRepository and MarketDataQueries.
     /// </summary>
@@ -100,21 +112,16 @@ namespace vv.Infrastructure.Repositories
         /// Shared implementation used by MarketDataQueries.
         /// </summary>
         protected async Task<(FxSpotPriceData? Result, string? ETag)> GetBySpecifiedVersionInternalAsync(
-            string dataType,
-            string assetClass,
-            string assetId,
-            string region,
-            DateOnly asOfDate,
-            string documentType,
+            MarketDataKey key,
             int version,
             CancellationToken cancellationToken = default)
         {
             Logger.LogInformation(
                 "Retrieving specific version of market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, Region={Region}, AsOf={AsOf}, DocType={DocType}, Version={Version}",
-                dataType, assetClass, assetId, region, asOfDate, documentType, version);
+                key.DataType, key.AssetClass, key.AssetId, key.Region, key.AsOfDate, key.DocumentType, version);
 
             var predicate = MarketDataQueryBuilder<FxSpotPriceData>.BuildMarketDataPredicate(
-                dataType, assetClass, assetId, region, asOfDate, documentType);
+                key.DataType, key.AssetClass, key.AssetId, key.Region, key.AsOfDate, key.DocumentType);
             return await Versioning.GetBySpecifiedVersionAsync(predicate, version, cancellationToken);
         }
     }

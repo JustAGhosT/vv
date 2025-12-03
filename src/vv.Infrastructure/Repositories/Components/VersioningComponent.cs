@@ -18,7 +18,6 @@ namespace vv.Infrastructure.Repositories.Components
     {
         private readonly Container _container;
         private readonly ILogger _logger;
-        private readonly IEntityIdGenerator<T>? _idGenerator;
         private readonly IRepository<T> _repository;
         private readonly IDataStoreAdapter<T> _dataStore;
 
@@ -26,14 +25,12 @@ namespace vv.Infrastructure.Repositories.Components
             Container container,
             ILogger logger,
             IRepository<T> repository,
-            IDataStoreAdapter<T> dataStore,
-            IEntityIdGenerator<T>? idGenerator = null)
+            IDataStoreAdapter<T> dataStore)
         {
             _container = container ?? throw new ArgumentNullException(nameof(container));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _dataStore = dataStore ?? throw new ArgumentNullException(nameof(dataStore));
-            _idGenerator = idGenerator;
         }
 
         public async Task<int> GetNextVersionAsync(

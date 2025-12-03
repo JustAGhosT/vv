@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -38,16 +38,13 @@ namespace vv.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
-        /// <remarks>
-        /// Note: This method loads all data into memory for filtering. For large datasets,
-        /// consider using QueryByRangeAsync with database-level filtering instead.
-        /// </remarks>
-        public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(Func<FxSpotPriceData, bool> predicate)
+        public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(
+            Expression<Func<FxSpotPriceData, bool>> predicate,
+            CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation("Executing predicate query on market data");
+            Logger.LogInformation("Executing expression query on market data");
 
-            var results = await Repository.GetAllAsync(cancellationToken: default);
-            return results.Where(predicate);
+            return await Repository.QueryAsync(predicate, cancellationToken: cancellationToken);
         }
 
         /// <inheritdoc/>
