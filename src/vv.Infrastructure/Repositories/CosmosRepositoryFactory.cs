@@ -53,8 +53,7 @@ namespace vv.Infrastructure.Repositories
                 container,
                 logger,
                 cosmosRepo,
-                cosmosRepo,
-                null); // No ID generator needed for queries
+                cosmosRepo);
 
             return new MarketDataQueries(
                 cosmosRepo,
@@ -81,8 +80,7 @@ namespace vv.Infrastructure.Repositories
                 container,
                 logger,
                 cosmosRepo,
-                cosmosRepo,
-                idGenerator);
+                cosmosRepo);
 
             return new MarketDataCommands(
                 cosmosRepo,

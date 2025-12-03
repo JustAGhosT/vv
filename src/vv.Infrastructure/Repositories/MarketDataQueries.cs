@@ -71,7 +71,8 @@ namespace vv.Infrastructure.Repositories
             string documentType,
             int version)
         {
-            return GetBySpecifiedVersionInternalAsync(dataType, assetClass, assetId, region, asOfDate, documentType, version, default);
+            var key = new MarketDataKey(dataType, assetClass, assetId, region, asOfDate, documentType);
+            return GetBySpecifiedVersionInternalAsync(key, version, default);
         }
 
         /// <inheritdoc/>

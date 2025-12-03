@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Script to run tests after commit and generate coverage reports
-const { execSync } = require("child_process");
-const path = require("path");
-const fs = require("fs");
+const { execSync } = require("node:child_process");
+const path = require("node:path");
+const fs = require("node:fs");
 
 try {
   // Run the tests
@@ -103,7 +103,7 @@ function processAllCoverageFiles() {
     const content = fs.readFileSync(filePath, 'utf8');
     
     // Replace any GitHub URLs with local paths
-    const processed = content.replace(
+    const processed = content.replaceAll(
       /https:\/\/raw\.githubusercontent\.com\/[^"]+\/src\//g, 
       'src/'
     );

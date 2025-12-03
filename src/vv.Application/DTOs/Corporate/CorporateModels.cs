@@ -93,8 +93,8 @@ namespace vv.Application.DTOs.Corporate
 
     public class OnboardingStepDto
     {
-        public string StepId { get; set; }
-        public string Name { get; set; }
+        public required string StepId { get; set; }
+        public required string Name { get; set; }
         public string Status { get; set; }
         public DateTime? CompletedAt { get; set; }
         public string CompletedBy { get; set; }

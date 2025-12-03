@@ -140,45 +140,45 @@ namespace vv.Application.DTOs.Wallet
 
     public class WalletTransactionDto
     {
-        public string TransactionId { get; set; }
-        public string Type { get; set; } // Send, Receive, Swap, Stake, etc.
-        public string Status { get; set; } // Pending, Approved, Rejected, Completed, Failed
-        public string FromAddress { get; set; }
-        public string ToAddress { get; set; }
-        public string Asset { get; set; }
+        public required string TransactionId { get; set; }
+        public required string Type { get; set; } // Send, Receive, Swap, Stake, etc.
+        public required string Status { get; set; } // Pending, Approved, Rejected, Completed, Failed
+        public required string FromAddress { get; set; }
+        public required string ToAddress { get; set; }
+        public required string Asset { get; set; }
         public decimal Amount { get; set; }
         public decimal FeeAmount { get; set; }
-        public string FeeAsset { get; set; }
+        public required string FeeAsset { get; set; }
         public DateTime InitiatedAt { get; set; }
-        public string InitiatedBy { get; set; }
+        public required string InitiatedBy { get; set; }
         public DateTime? CompletedAt { get; set; }
-        public string TransactionHash { get; set; }
+        public required string TransactionHash { get; set; }
         public int Confirmations { get; set; }
         public List<TransactionApprovalDto> Approvals { get; set; } = new();
-        public string Memo { get; set; }
-        public string Purpose { get; set; } // Business context
+        public required string Memo { get; set; }
+        public required string Purpose { get; set; } // Business context
         public Dictionary<string, string> Metadata { get; set; } = new();
         public bool IsOnChainVerified { get; set; }
     }
 
     public class TransactionApprovalDto
     {
-        public string ApprovalId { get; set; }
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string Role { get; set; }
-        public string Decision { get; set; } // Approved, Rejected, Pending
+        public required string ApprovalId { get; set; }
+        public required string UserId { get; set; }
+        public required string UserName { get; set; }
+        public required string Role { get; set; }
+        public required string Decision { get; set; } // Approved, Rejected, Pending
         public DateTime? ActionTime { get; set; }
-        public string Comments { get; set; }
-        public string ApprovalMethod { get; set; } // App, Email, Hardware, etc.
-        public string SignatureHash { get; set; }
-        public string IpAddress { get; set; }
+        public required string Comments { get; set; }
+        public required string ApprovalMethod { get; set; } // App, Email, Hardware, etc.
+        public required string SignatureHash { get; set; }
+        public required string IpAddress { get; set; }
     }
 
     public class SecuritySettingsDto
     {
         public bool TwoFactorEnabled { get; set; }
-        public string TwoFactorType { get; set; } // App, SMS, Email, Hardware
+        public required string TwoFactorType { get; set; } // App, SMS, Email, Hardware
         public bool BiometricEnabled { get; set; }
         public bool EmailNotificationsEnabled { get; set; }
         public bool PushNotificationsEnabled { get; set; }
@@ -191,15 +191,15 @@ namespace vv.Application.DTOs.Wallet
 
     public class ExternalIntegrationDto
     {
-        public string IntegrationId { get; set; }
-        public string Type { get; set; } // ERP, Accounting, Banking, etc.
-        public string Provider { get; set; } // Name of the provider
-        public string Status { get; set; } // Active, Inactive, Error
+        public required string IntegrationId { get; set; }
+        public required string Type { get; set; } // ERP, Accounting, Banking, etc.
+        public required string Provider { get; set; } // Name of the provider
+        public required string Status { get; set; } // Active, Inactive, Error
         public DateTime LastSyncTime { get; set; }
         public Dictionary<string, string> Configuration { get; set; } = new();
         public List<string> SyncedDataTypes { get; set; } = new();
-        public string SyncFrequency { get; set; } // Real-time, Hourly, Daily, etc.
-        public string ApiKeyHash { get; set; } // Masked API key
+        public required string SyncFrequency { get; set; } // Real-time, Hourly, Daily, etc.
+        public required string ApiKeyHash { get; set; } // Masked API key
     }
 
     public class AuditConfigDto
@@ -207,13 +207,13 @@ namespace vv.Application.DTOs.Wallet
         public bool ComprehensiveLogging { get; set; }
         public int LogRetentionDays { get; set; }
         public bool ExportToComplianceSystem { get; set; }
-        public string ComplianceSystemName { get; set; }
+        public required string ComplianceSystemName { get; set; }
         public List<string> AuditedActions { get; set; } = new();
         public bool CaptureIpAddress { get; set; }
         public bool CaptureDeviceInfo { get; set; }
         public bool CaptureGeoLocation { get; set; }
-        public string AuditFileFormat { get; set; } // CSV, JSON, etc.
-        public string AuditStorageLocation { get; set; }
+        public required string AuditFileFormat { get; set; } // CSV, JSON, etc.
+        public required string AuditStorageLocation { get; set; }
     }
 
     public class ComplianceSettingsDto
@@ -225,7 +225,7 @@ namespace vv.Application.DTOs.Wallet
         public decimal LargeTransactionThresholdUsd { get; set; }
         public bool RequirePurposeForLargeTransactions { get; set; }
         public bool PerformBlockchainAnalysis { get; set; }
-        public string BlockchainAnalysisProvider { get; set; }
+        public required string BlockchainAnalysisProvider { get; set; }
         public int MaxRiskScoreAllowed { get; set; } // 1-100
         public List<string> TransactionPurposeOptions { get; set; } = new();
     }

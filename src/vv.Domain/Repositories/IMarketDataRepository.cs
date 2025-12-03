@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using vv.Domain.Models;
@@ -17,7 +18,9 @@ namespace vv.Domain.Repositories
             string documentType,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<FxSpotPriceData>> QueryAsync(Func<FxSpotPriceData, bool> predicate);
+        Task<IEnumerable<FxSpotPriceData>> QueryAsync(
+            Expression<Func<FxSpotPriceData, bool>> predicate,
+            CancellationToken cancellationToken = default);
 
         Task<FxSpotPriceData> CreateMarketDataAsync(FxSpotPriceData data);
 
