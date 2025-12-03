@@ -9,12 +9,11 @@ using Azure.Messaging;
 using Azure.Messaging.EventGrid;
 using Microsoft.Extensions.Logging;
 using vv.Domain.Configuration;
-using vv.Domain.Events;
 using vv.Domain.Models;
 
 namespace vv.Infrastructure.Events
 {
-    public class EventGridPublisher : IEventPublisher
+    public class EventGridPublisher : vv.Domain.Events.IEventPublisher
     {
         private readonly EventGridPublisherClient _client;
         private readonly ILogger<EventGridPublisher> _logger;

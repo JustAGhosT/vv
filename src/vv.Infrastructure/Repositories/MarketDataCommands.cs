@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using vv.Domain.Events;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
 using vv.Domain.Repositories.Components;
@@ -20,12 +19,12 @@ namespace vv.Infrastructure.Repositories
         private readonly ILogger<MarketDataCommands> _logger;
         private readonly IRepository<FxSpotPriceData> _repository;
         private readonly IVersioningCapability<FxSpotPriceData> _versioning;
-        private readonly IEventPublisher? _eventPublisher;
+        private readonly vv.Domain.Events.IEventPublisher? _eventPublisher;
 
         public MarketDataCommands(
             IRepository<FxSpotPriceData> repository,
             IVersioningCapability<FxSpotPriceData> versioning,
-            IEventPublisher? eventPublisher,
+            vv.Domain.Events.IEventPublisher? eventPublisher,
             ILogger<MarketDataCommands> logger)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));

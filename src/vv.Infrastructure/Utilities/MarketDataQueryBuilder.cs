@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using vv.Data.Utilities;
 using vv.Domain.Models;
 
 namespace vv.Infrastructure.Utilities

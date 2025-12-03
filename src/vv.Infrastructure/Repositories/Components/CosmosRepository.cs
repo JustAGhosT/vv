@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
-using vv.Domain.Events;
 using vv.Domain.Models;
 using vv.Domain.Repositories.Components;
 
