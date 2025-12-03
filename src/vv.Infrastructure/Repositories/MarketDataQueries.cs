@@ -71,7 +71,7 @@ namespace vv.Infrastructure.Repositories
             string documentType,
             int version)
         {
-            return GetBySpecifiedVersionInternalAsync(dataType, assetClass, assetId, region, asOfDate, documentType, version);
+            return GetBySpecifiedVersionInternalAsync(dataType, assetClass, assetId, region, asOfDate, documentType, version, default);
         }
 
         /// <inheritdoc/>
@@ -83,7 +83,7 @@ namespace vv.Infrastructure.Repositories
             DateOnly asOfDate,
             string documentType)
         {
-            return GetByLatestVersionInternalAsync(dataType, assetClass, assetId, region, asOfDate, documentType);
+            return GetByLatestVersionInternalAsync(dataType, assetClass, assetId, region, asOfDate, documentType, default);
         }
 
         /// <inheritdoc/>
@@ -94,7 +94,7 @@ namespace vv.Infrastructure.Repositories
             DateOnly? fromDate = null,
             DateOnly? toDate = null)
         {
-            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDate, toDate);
+            return QueryByRangeInternalAsync(dataType, assetClass, assetId, fromDate, toDate, default);
         }
 
         /// <inheritdoc/>
