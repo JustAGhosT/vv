@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
+using vv.Data.Repositories;
 using vv.Domain.Models;
 using vv.Domain.Repositories.Components;
 using vv.Domain.Specifications;
@@ -150,10 +151,8 @@ namespace vv.Infrastructure.Repositories.Components
             int nextVersion = await GetNextVersionAsync(specification, cancellationToken);
             entity.Version = nextVersion;
 
-            if (_idGenerator != null && string.IsNullOrEmpty(entity.Id))
-            {
-                entity.Id = _idGenerator.GenerateId(entity);
-            }
+            // Id is calculated from entity properties (DataType, AssetClass, AssetId, etc.)
+            // No need to set it manually
 
             return await _repository.CreateAsync(entity, cancellationToken);
         }
@@ -166,20 +165,10 @@ namespace vv.Infrastructure.Repositories.Components
             int nextVersion = await GetNextVersionAsync(predicate, cancellationToken);
             entity.Version = nextVersion;
 
-            if (_idGenerator != null && string.IsNullOrEmpty(entity.Id))
-            {
-                entity.Id = _idGenerator.GenerateId(entity);
-            }
+            // Id is calculated from entity properties (DataType, AssetClass, AssetId, etc.)
+            // No need to set it manually
 
             return await _repository.CreateAsync(entity, cancellationToken);
         }
-    }
-
-    /// <summary>
-    /// Interface for generating entity IDs
-    /// </summary>
-    public interface IEntityIdGenerator<in T>
-    {
-        string GenerateId(T entity);
     }
 }

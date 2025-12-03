@@ -1,11 +1,13 @@
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using vv.Data.Repositories;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
 using vv.Domain.Repositories.Components;
 using vv.Infrastructure.Repositories;
 using System;
+using IRepositoryFactory = vv.Domain.Repositories.IRepositoryFactory;
 
 namespace vv.Infrastructure.Factories
 {

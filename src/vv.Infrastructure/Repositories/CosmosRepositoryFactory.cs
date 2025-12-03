@@ -2,12 +2,14 @@ using System;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using vv.Data.Repositories;
 using vv.Domain.Events;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
 using vv.Domain.Repositories.Components;
 using vv.Infrastructure.Configuration;
 using vv.Infrastructure.Repositories.Components;
+using IRepositoryFactory = vv.Domain.Repositories.IRepositoryFactory;
 
 namespace vv.Infrastructure.Repositories
 {
@@ -65,7 +67,7 @@ namespace vv.Infrastructure.Repositories
         {
             var container = GetMarketDataContainer();
             var logger = _loggerFactory.CreateLogger<MarketDataCommands>();
-            var idGenerator = new MarketDataIdGenerator();
+            var idGenerator = new MarketDataIdGenerator<FxSpotPriceData>();
 
             // Create cosmos repository for commands
             var cosmosRepo = new Components.CosmosRepository<FxSpotPriceData>(

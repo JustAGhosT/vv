@@ -210,7 +210,7 @@ namespace vv.Infrastructure.Events
             if (marketData == null)
                 throw new ArgumentNullException(nameof(marketData));
 
-            var eventType = (marketData.Version.GetValueOrDefault() > 1)
+            var eventType = (marketData.Version > 1)
                 ? "vv.DataChanged"
                 : "vv.DataCreated";
 
