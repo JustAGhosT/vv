@@ -138,7 +138,14 @@ namespace vv.Infrastructure.Repositories
         {
             var predicate = BuildCurrencyPairPredicate(baseCurrency, quoteCurrency, asOfDate);
             var (entity, _) = await _versioning.GetByLatestVersionAsync(predicate, cancellationToken);
-            return FxSpotPriceRate.FromEntity(entity)!;
+            
+            if (entity == null)
+            {
+                throw new InvalidOperationException(
+                    $"No exchange rate found for {baseCurrency}/{quoteCurrency} as of {asOfDate}");
+            }
+            
+            return FxSpotPriceRate.FromEntity(entity);
         }
 
         /// <inheritdoc/>

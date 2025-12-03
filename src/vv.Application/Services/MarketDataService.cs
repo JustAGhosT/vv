@@ -134,6 +134,8 @@ namespace vv.Application.Services
             if (result == null)
             {
                 _logger.LogWarning("No market data found for {AssetId} as of {AsOfDate}", assetId, asOfDate);
+                throw new InvalidOperationException(
+                    $"No market data found for asset '{assetId}' as of {asOfDate}");
             }
             
             return result;

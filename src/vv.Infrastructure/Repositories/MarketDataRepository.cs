@@ -51,6 +51,10 @@ namespace vv.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// Note: This method loads all data into memory for filtering. For large datasets,
+        /// consider using QueryByRangeAsync with database-level filtering instead.
+        /// </remarks>
         public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(Func<FxSpotPriceData, bool> predicate)
         {
             _logger.LogInformation("Executing predicate query on market data");
