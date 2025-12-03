@@ -58,18 +58,18 @@ namespace vv.Application.DTOs.Governance
 
     public class VoteDto
     {
-        public string VoteId { get; set; }
-        public string ProposalId { get; set; }
-        public string VoterAddress { get; set; }
-        public string VoterName { get; set; } // If known
-        public string Vote { get; set; } // For, Against, Abstain
+        public required string VoteId { get; set; }
+        public required string ProposalId { get; set; }
+        public required string VoterAddress { get; set; }
+        public string? VoterName { get; set; } // If known, optional
+        public required string Vote { get; set; } // For, Against, Abstain
         public decimal VotingPower { get; set; }
         public DateTime CastAt { get; set; }
         public Dictionary<string, decimal> TokenBreakdown { get; set; } = new(); // Token → amount
-        public string TransactionHash { get; set; }
-        public string Reason { get; set; } // Optional voting reason
+        public required string TransactionHash { get; set; }
+        public string? Reason { get; set; } // Optional voting reason
         public bool IsDelegated { get; set; }
-        public string DelegatedFrom { get; set; } // If vote is from delegation
+        public string? DelegatedFrom { get; set; } // If vote is from delegation
     }
 
     public class VoteBreakdownDto

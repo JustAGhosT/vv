@@ -19,12 +19,12 @@ namespace vv.Application.DTOs.Wallet
 
     public class StandardWalletDto : BaseWalletDto
     {
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
         public bool HasRecoveryMethod { get; set; }
-        public string RecoveryType { get; set; } // Email, Phone, Social, Hardware
+        public required string RecoveryType { get; set; } // Email, Phone, Social, Hardware
         public DateTime LastBackupDate { get; set; }
         public List<string> LinkedExchanges { get; set; } = new();
-        public SecuritySettingsDto SecuritySettings { get; set; }
+        public required SecuritySettingsDto SecuritySettings { get; set; }
     }
 
     public class CorporateWalletDto : BaseWalletDto
