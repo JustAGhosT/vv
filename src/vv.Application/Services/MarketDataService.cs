@@ -27,7 +27,7 @@ namespace vv.Application.Services
             // Currently we only support FxSpotPriceData
             if (marketData is FxSpotPriceData fxSpotData)
             {
-                var result = await _repository.CreateAsync(fxSpotData);
+                var result = await _repository.CreateMarketDataAsync(fxSpotData);
                 _logger.LogInformation("Successfully published market data with ID {Id}", result.Id);
                 return result.Id;
             }
@@ -42,7 +42,7 @@ namespace vv.Application.Services
             // Currently we only support FxSpotPriceData
             if (marketData is FxSpotPriceData fxSpotData)
             {
-                await _repository.UpdateAsync(fxSpotData);
+                await _repository.UpdateMarketDataAsync(fxSpotData);
                 _logger.LogInformation("Successfully updated market data with ID {Id}", marketData.Id);
                 return true;
             }
@@ -54,7 +54,7 @@ namespace vv.Application.Services
         {
             _logger.LogInformation("Deleting market data with ID {Id}", id);
 
-            var result = await _repository.DeleteAsync(id);
+            var result = await _repository.DeleteMarketDataAsync(id);
 
             if (result)
             {
@@ -152,7 +152,7 @@ namespace vv.Application.Services
         {
             _logger.LogInformation("Creating market data for {AssetId}", data.AssetId);
             
-            var result = await _repository.CreateAsync(data);
+            var result = await _repository.CreateMarketDataAsync(data);
             _logger.LogInformation("Successfully created market data with ID {Id}", result.Id);
             
             return result.Id;
