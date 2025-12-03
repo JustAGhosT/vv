@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using vv.Domain.Events;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
@@ -16,8 +15,8 @@ namespace vv.Data.Repositories
     public abstract class BaseVersionedRepository<T> : BaseRepository<T>, IVersionedRepository<T>
         where T : class, IMarketDataEntity, IVersionedEntity
     {
-        protected BaseVersionedRepository(IMediator? mediator = null)
-            : base(mediator)
+        protected BaseVersionedRepository(IEventPublisher? eventPublisher = null)
+            : base(eventPublisher)
         {
         }
 

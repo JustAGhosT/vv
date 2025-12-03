@@ -115,7 +115,7 @@ namespace vv.Application.DTOs.Dashboard
     public class DashboardMetricDto
     {
         public DateTime Date { get; set; }
-        public string MetricName { get; set; }
+        public required string MetricName { get; set; }
         public decimal Value { get; set; }
         public decimal ChangeFromPrevious { get; set; }
     }

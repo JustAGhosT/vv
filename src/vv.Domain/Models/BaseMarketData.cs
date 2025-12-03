@@ -1,4 +1,4 @@
-﻿using vv.Domain.Models;
+using vv.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -195,13 +195,13 @@ public abstract class BaseMarketData : IMarketDataEntity, ISoftDeletable
     private string CalculateId()
     {
         // Validate required properties
-        if (string.IsNullOrEmpty(DataType)
-            || string.IsNullOrEmpty(AssetClass)
-            || string.IsNullOrEmpty(AssetId)
-            || string.IsNullOrEmpty(Region)
-            || string.IsNullOrEmpty(DocumentType)
+        if (string.IsNullOrWhiteSpace(DataType)
+            || string.IsNullOrWhiteSpace(AssetClass)
+            || string.IsNullOrWhiteSpace(AssetId)
+            || string.IsNullOrWhiteSpace(Region)
+            || string.IsNullOrWhiteSpace(DocumentType)
             || AsOfDate == default
-            || string.IsNullOrEmpty(SchemaVersion))
+            || string.IsNullOrWhiteSpace(SchemaVersion))
         {
             return string.Empty;
         }

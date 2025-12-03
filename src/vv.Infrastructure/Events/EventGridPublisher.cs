@@ -9,12 +9,11 @@ using Azure.Messaging;
 using Azure.Messaging.EventGrid;
 using Microsoft.Extensions.Logging;
 using vv.Domain.Configuration;
-using vv.Domain.Events;
 using vv.Domain.Models;
 
 namespace vv.Infrastructure.Events
 {
-    public class EventGridPublisher : IEventPublisher
+    public class EventGridPublisher : vv.Domain.Events.IEventPublisher
     {
         private readonly EventGridPublisherClient _client;
         private readonly ILogger<EventGridPublisher> _logger;
@@ -133,7 +132,7 @@ namespace vv.Infrastructure.Events
                 foreach (var e in eventsList)
                 {
                     var data = BinaryData.FromObjectAsJson(e, options);
-                    if (data.ToArray().Length > MaxPayloadSizeBytes)
+                    if (data.ToMemory().Length > MaxPayloadSizeBytes)
                     {
                         _logger.LogError("Event of type {EventType} exceeds the 1MB payload limit and will not be published.", eventType);
                         continue; // Or handle splitting/alternative logic as needed
@@ -184,7 +183,8 @@ namespace vv.Infrastructure.Events
                                 // Continue with other batches but record the failure
                                 break;
                             }
-                            await Task.Delay((int)(1000 * Math.Pow(2, retryCount)), cancellationToken); // Exponential backoff
+                            // Use retryCount - 1 for proper exponential backoff: 1s, 2s, 4s
+                            await Task.Delay((int)(1000 * Math.Pow(2, retryCount - 1)), cancellationToken);
                         }
                     }
                 }
@@ -210,7 +210,7 @@ namespace vv.Infrastructure.Events
             if (marketData == null)
                 throw new ArgumentNullException(nameof(marketData));
 
-            var eventType = (marketData.Version.GetValueOrDefault() > 1)
+            var eventType = (marketData.Version > 1)
                 ? "vv.DataChanged"
                 : "vv.DataCreated";
 
@@ -305,7 +305,7 @@ namespace vv.Infrastructure.Events
             // Add size of data
             if (cloudEvent.Data != null)
             {
-                size += cloudEvent.Data.ToArray().Length;
+                size += cloudEvent.Data.ToMemory().Length;
             }
 
             // Add size for extension attributes

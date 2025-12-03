@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
 using vv.Domain.Services;
-using System.Linq;
 
 namespace vv.Application.Services
 {
@@ -27,7 +29,7 @@ namespace vv.Application.Services
             // Currently we only support FxSpotPriceData
             if (marketData is FxSpotPriceData fxSpotData)
             {
-                var result = await _repository.CreateAsync(fxSpotData);
+                var result = await _repository.CreateMarketDataAsync(fxSpotData);
                 _logger.LogInformation("Successfully published market data with ID {Id}", result.Id);
                 return result.Id;
             }
@@ -42,7 +44,7 @@ namespace vv.Application.Services
             // Currently we only support FxSpotPriceData
             if (marketData is FxSpotPriceData fxSpotData)
             {
-                await _repository.UpdateAsync(fxSpotData);
+                await _repository.UpdateMarketDataAsync(fxSpotData);
                 _logger.LogInformation("Successfully updated market data with ID {Id}", marketData.Id);
                 return true;
             }
@@ -54,7 +56,7 @@ namespace vv.Application.Services
         {
             _logger.LogInformation("Deleting market data with ID {Id}", id);
 
-            var result = await _repository.DeleteAsync(id);
+            var result = await _repository.DeleteMarketDataAsync(id);
 
             if (result)
             {
@@ -134,16 +136,20 @@ namespace vv.Application.Services
             if (result == null)
             {
                 _logger.LogWarning("No market data found for {AssetId} as of {AsOfDate}", assetId, asOfDate);
+                throw new InvalidOperationException(
+                    $"No market data found for asset '{assetId}' as of {asOfDate}");
             }
             
             return result;
         }
 
-        public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(Func<FxSpotPriceData, bool> predicate)
+        public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(
+            Expression<Func<FxSpotPriceData, bool>> predicate,
+            CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Querying market data with predicate");
+            _logger.LogInformation("Querying market data with predicate expression");
             
-            var result = await _repository.QueryAsync(predicate);
+            var result = await _repository.QueryAsync(predicate, cancellationToken);
             
             return result;
         }
@@ -152,7 +158,7 @@ namespace vv.Application.Services
         {
             _logger.LogInformation("Creating market data for {AssetId}", data.AssetId);
             
-            var result = await _repository.CreateAsync(data);
+            var result = await _repository.CreateMarketDataAsync(data);
             _logger.LogInformation("Successfully created market data with ID {Id}", result.Id);
             
             return result.Id;

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Script to run tests after commit and generate coverage reports
-const { execSync } = require("child_process");
-const path = require("path");
-const fs = require("fs");
+const { execSync } = require("node:child_process");
+const path = require("node:path");
+const fs = require("node:fs");
 
 try {
   // Run the tests
@@ -27,7 +27,13 @@ try {
     }
 
     // Generate the report using coverage files from ALL test projects
-    const reportDir = path.join("coverage-report");
+    const reportDir = path.resolve(process.cwd(), "coverage-report");
+    
+    // Validate that the report directory is within the current working directory
+    const currentDir = process.cwd();
+    if (!reportDir.startsWith(currentDir)) {
+      throw new Error("Invalid report directory path - must be within current directory");
+    }
     
     // Clear existing coverage reports
     if (fs.existsSync(reportDir)) {
@@ -97,7 +103,7 @@ function processAllCoverageFiles() {
     const content = fs.readFileSync(filePath, 'utf8');
     
     // Replace any GitHub URLs with local paths
-    const processed = content.replace(
+    const processed = content.replaceAll(
       /https:\/\/raw\.githubusercontent\.com\/[^"]+\/src\//g, 
       'src/'
     );

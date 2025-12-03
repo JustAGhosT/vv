@@ -127,7 +127,10 @@ def main():
             # Otherwise, read from the script output
             with open('broken_links_output.txt', 'r', encoding='utf-8') as f:
                 broken_links_output = f.read()
-    except:
+    except (FileNotFoundError, IOError) as e:
+        print(f"Warning: Could not read broken links output: {e}", file=sys.stderr)
+    except Exception as e:
+        print(f"Error reading input: {e}", file=sys.stderr)
         # If there's no input, use a hardcoded list of broken links from previous runs
         broken_links_output = """
         File: Domains\ExternalInterface\datalake\datalake-integration.md

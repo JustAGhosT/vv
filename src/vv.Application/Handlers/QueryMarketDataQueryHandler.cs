@@ -28,12 +28,20 @@ namespace vv.Application.Handlers
             _logger.LogInformation("Handling QueryMarketDataQuery for AssetClass: {AssetClass}, AssetId: {AssetId}",
                 request.AssetClass, request.AssetId ?? "any");
 
+            // Capture request values to use in expression (avoid closure over request object)
+            var assetClass = request.AssetClass;
+            var assetId = request.AssetId?.ToLowerInvariant();
+            var fromDate = request.FromDate;
+            var toDate = request.ToDate;
+            var region = request.Region;
+
             return await _marketDataService.QueryAsync(e =>
-                (e.AssetClass == request.AssetClass) &&
-                (string.IsNullOrEmpty(request.AssetId) || e.AssetId == request.AssetId.ToLowerInvariant()) &&
-                (request.FromDate == null || e.AsOfDate >= request.FromDate) &&
-                (request.ToDate == null || e.AsOfDate <= request.ToDate) &&
-                (string.IsNullOrEmpty(request.Region) || e.Region == request.Region)
+                (e.AssetClass == assetClass) &&
+                (string.IsNullOrEmpty(assetId) || e.AssetId == assetId) &&
+                (fromDate == null || e.AsOfDate >= fromDate) &&
+                (toDate == null || e.AsOfDate <= toDate) &&
+                (string.IsNullOrEmpty(region) || e.Region == region),
+                cancellationToken
             );
         }
     }

@@ -76,7 +76,7 @@ namespace vv.Application.Events
             _logger.LogInformation("Received market data changed event for {DataType} {AssetId}",
                 eventData.DataType, eventData.AssetId);
 
-            await _retryPolicy.ExecuteAsync(async () =>
+            await _retryPolicy.ExecuteAsync(async (ct) =>
             {
                 try
                 {
@@ -84,14 +84,14 @@ namespace vv.Application.Events
                     _logger.LogInformation("Processing market data changed event: {EventId}", eventData.Id);
 
                     // Call the event processor to handle the event
-                    await _eventProcessor.ProcessChangedEventAsync(eventData, cancellationToken);
+                    await _eventProcessor.ProcessChangedEventAsync(eventData, ct);
                 }
                 catch (Exception ex) when (!(ex is OperationCanceledException))
                 {
                     _logger.LogError(ex, "Error processing market data changed event: {EventId}", eventData.Id);
                     throw; // Rethrowing to trigger retry
                 }
-            });
+            }, cancellationToken);
         }
     }
 }

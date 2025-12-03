@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq; // Add this namespace for ToFeedIterator extension method
 using Microsoft.Extensions.Logging;
-using MediatR;
 using vv.Data.Repositories;
 using vv.Data.Utilities;
 using vv.Domain.Events;
@@ -32,9 +31,9 @@ namespace vv.Infrastructure.Repositories
             Container container,
             ILogger logger,
             IEntityIdGenerator<T>? idGenerator = null,
-            IMediator? mediator = null,
+            IEventPublisher? eventPublisher = null,
             Func<T, string>? partitionKeyResolver = null)
-            : base(mediator)
+            : base(eventPublisher)
         {
             _container = container ?? throw new ArgumentNullException(nameof(container));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -335,11 +334,11 @@ namespace vv.Infrastructure.Repositories
         /// </summary>
         protected virtual Task PublishEntityCreatedEventAsync(T entity, CancellationToken cancellationToken)
         {
-            if (_mediator == null || entity == null)
+            if (_eventPublisher == null || entity == null)
                 return Task.CompletedTask;
 
             var @event = new EntityCreatedEvent<T>(entity);
-            return _mediator.Publish(@event, cancellationToken);
+            return _eventPublisher.PublishAsync(@event, cancellationToken: cancellationToken);
         }
     }
 }

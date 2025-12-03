@@ -2,12 +2,12 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using vv.Data.Repositories;
-using vv.Domain.Events;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
+using vv.Domain.Repositories.Components;
 using vv.Infrastructure.Repositories;
-using vv.Infrastructure.Repositories.Components;
 using System;
+using IRepositoryFactory = vv.Domain.Repositories.IRepositoryFactory;
 
 namespace vv.Infrastructure.Factories
 {
@@ -31,19 +31,18 @@ namespace vv.Infrastructure.Factories
             var logger = _services.GetRequiredService<ILogger<MarketDataQueries>>();
 
             // Create cosmos repository for queries
-            var cosmosRepo = new CosmosRepository<FxSpotPriceData>(
+            var cosmosRepo = new vv.Infrastructure.Repositories.Components.CosmosRepository<FxSpotPriceData>(
                 container,
                 logger,
                 null, // No event publisher needed for queries
                 entity => entity.AssetId.ToLowerInvariant());
 
             // Create versioning component
-            var versioningComponent = new VersioningComponent<FxSpotPriceData>(
+            var versioningComponent = new vv.Infrastructure.Repositories.Components.VersioningComponent<FxSpotPriceData>(
                 container,
                 logger,
                 cosmosRepo,
-                cosmosRepo,
-                null); // No ID generator needed for queries
+                cosmosRepo);
 
             // Create market data queries implementation
             return new MarketDataQueries(
@@ -59,22 +58,21 @@ namespace vv.Infrastructure.Factories
             var container = _services.GetRequiredService<Container>();
             var logger = _services.GetRequiredService<ILogger<MarketDataCommands>>();
             var idGenerator = _services.GetRequiredService<IEntityIdGenerator<FxSpotPriceData>>();
-            var eventPublisher = _services.GetService<IEventPublisher>();
+            var eventPublisher = _services.GetService<vv.Domain.Events.IEventPublisher>();
 
             // Create cosmos repository for commands
-            var cosmosRepo = new CosmosRepository<FxSpotPriceData>(
+            var cosmosRepo = new vv.Infrastructure.Repositories.Components.CosmosRepository<FxSpotPriceData>(
                 container,
                 logger,
                 eventPublisher,
                 entity => entity.AssetId.ToLowerInvariant());
 
             // Create versioning component
-            var versioningComponent = new VersioningComponent<FxSpotPriceData>(
+            var versioningComponent = new vv.Infrastructure.Repositories.Components.VersioningComponent<FxSpotPriceData>(
                 container,
                 logger,
                 cosmosRepo,
-                cosmosRepo,
-                idGenerator);
+                cosmosRepo);
 
             // Create market data commands implementation
             return new MarketDataCommands(

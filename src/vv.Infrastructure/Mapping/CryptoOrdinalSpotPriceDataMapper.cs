@@ -47,7 +47,7 @@ namespace vv.Infrastructure.Mapping
             var domain = new CryptoOrdinalSpotPriceData
             {
                 SchemaVersion = dto.SchemaVersion,
-                Version = dto.Version,
+                Version = dto.Version ?? 1,
                 AssetId = dto.AssetId, // This will be auto-normalized to lowercase by the property setter
                 DisplayAssetId = dto.AssetId, // Add this line to preserve original case
                 AssetClass = dto.AssetClass,

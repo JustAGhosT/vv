@@ -76,8 +76,8 @@ namespace vv.Application.DTOs.LiquidityPools
 
     public class LiquidityVenueDto
     {
-        public string VenueName { get; set; } // Exchange name or DeFi protocol
-        public string VenueType { get; set; } // CEX, DEX, AMM, etc.
+        public required string VenueName { get; set; } // Exchange name or DeFi protocol
+        public required string VenueType { get; set; } // CEX, DEX, AMM, etc.
         public decimal AllocatedAmount { get; set; }
         public decimal CurrentAmount { get; set; } // May differ due to P&L
         public decimal UtilizationRate { get; set; }

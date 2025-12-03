@@ -23,11 +23,19 @@ namespace vv.Domain.Models
             Asks.Count > 0 && Bids.Count > 0 ?
             (Asks[0].Price + Bids[0].Price) / 2 : 0;
 
-        public decimal CalculateBidDepth(int levels) =>
-            Bids.Take(levels).Sum(level => level.Price * level.Quantity);
+        public decimal CalculateBidDepth(int levels)
+        {
+            if (levels <= 0) 
+                throw new ArgumentException("Levels must be greater than zero", nameof(levels));
+            return Bids.Take(levels).Sum(level => level.Price * level.Quantity);
+        }
 
-        public decimal CalculateAskDepth(int levels) =>
-            Asks.Take(levels).Sum(level => level.Price * level.Quantity);
+        public decimal CalculateAskDepth(int levels)
+        {
+            if (levels <= 0) 
+                throw new ArgumentException("Levels must be greater than zero", nameof(levels));
+            return Asks.Take(levels).Sum(level => level.Price * level.Quantity);
+        }
     }
 
     public class OrderBookLevel

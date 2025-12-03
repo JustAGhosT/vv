@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Serialization;
 using vv.Core.Validation;
 
 namespace vv.Domain.Validation
@@ -10,7 +9,6 @@ namespace vv.Domain.Validation
     /// <summary>
     /// Exception thrown when validation fails
     /// </summary>
-    [Serializable]
     public class ValidationException : Exception
     {
         /// <summary>
@@ -56,32 +54,6 @@ namespace vv.Domain.Validation
             : base(message)
         {
             Errors = Array.Empty<ValidationError>();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the ValidationException class with serialized data
-        /// </summary>
-        /// <param name="info">The serialization info</param>
-        /// <param name="context">The streaming context</param>
-        protected ValidationException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            var errorsData = info.GetValue("Errors", typeof(ValidationError[])) as ValidationError[];
-            Errors = errorsData ?? Array.Empty<ValidationError>();
-        }
-
-        /// <summary>
-        /// Gets object data for serialization
-        /// </summary>
-        /// <param name="info">The serialization info</param>
-        /// <param name="context">The streaming context</param>
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-                throw new ArgumentNullException(nameof(info));
-
-            base.GetObjectData(info, context);
-            info.AddValue("Errors", Errors.ToArray());
         }
 
         /// <summary>

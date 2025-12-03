@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -72,7 +74,9 @@ namespace vv.Api.Tests.E2E
                     mockService.Setup(s => s.CreateMarketDataAsync(It.IsAny<FxSpotPriceData>()))
                         .ReturnsAsync("test-id-123");
 
-                    mockService.Setup(s => s.QueryAsync(It.IsAny<Func<FxSpotPriceData, bool>>()))
+                    mockService.Setup(s => s.QueryAsync(
+                            It.IsAny<Expression<Func<FxSpotPriceData, bool>>>(),
+                            It.IsAny<CancellationToken>()))
                         .ReturnsAsync(new List<FxSpotPriceData> { testData });
 
                     services.AddTransient(_ => mockService.Object);

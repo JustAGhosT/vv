@@ -34,4 +34,47 @@ namespace vv.Domain.Events
             Source = "Repository";
         }
     }
+
+    /// <summary>
+    /// Event raised when market data is saved
+    /// </summary>
+    public class MarketDataSavedEvent : DomainEvent
+    {
+        public string EntityId { get; set; } = string.Empty;
+        public string EntityType { get; set; } = string.Empty;
+
+        public MarketDataSavedEvent()
+        {
+            Source = "MarketDataCommands";
+        }
+    }
+
+    /// <summary>
+    /// Event raised when market data is deleted
+    /// </summary>
+    public class MarketDataDeletedEvent : DomainEvent
+    {
+        public string EntityId { get; set; } = string.Empty;
+        public string EntityType { get; set; } = string.Empty;
+        public bool IsSoftDelete { get; set; }
+
+        public MarketDataDeletedEvent()
+        {
+            Source = "MarketDataCommands";
+        }
+    }
+
+    /// <summary>
+    /// Event raised when soft-deleted market data is purged
+    /// </summary>
+    public class MarketDataPurgedEvent : DomainEvent
+    {
+        public int EntityCount { get; set; }
+        public string EntityType { get; set; } = string.Empty;
+
+        public MarketDataPurgedEvent()
+        {
+            Source = "MarketDataCommands";
+        }
+    }
 }

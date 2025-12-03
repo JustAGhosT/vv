@@ -8,7 +8,6 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Logging;
 using vv.Data.Repositories;
-using vv.Domain.Events;
 using vv.Domain.Models;
 
 namespace vv.Infrastructure.Repositories
@@ -26,7 +25,7 @@ namespace vv.Infrastructure.Repositories
         protected CosmosRepository(
             Container container,
             ILogger logger,
-            IEventPublisher? eventPublisher = null,
+            vv.Domain.Events.IEventPublisher? eventPublisher = null,
             Func<T, string>? partitionKeyResolver = null)
             : base(eventPublisher)
         {

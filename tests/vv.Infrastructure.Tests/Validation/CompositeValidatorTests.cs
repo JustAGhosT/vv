@@ -18,7 +18,9 @@ namespace vv.Infrastructure.Tests.Validation
         {
             public string Id => $"{DataType}.{AssetClass}/{AssetId}/{AsOfDate:yyyyMMdd}/{DocumentType}/{Version}";
             public string SchemaVersion { get; set; } = "1.0";
-            public int? Version { get; set; } = 1;
+            public int Version { get; set; } = 1;
+            public string? BaseVersionId { get; set; }
+            public bool IsLatestVersion { get; set; } = true;
             public string AssetId { get; set; } = "TEST";
             public string AssetClass { get; set; } = "test";
             public string DataType { get; set; } = "testdata";
