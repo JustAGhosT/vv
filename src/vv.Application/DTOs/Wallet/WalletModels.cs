@@ -169,10 +169,10 @@ namespace vv.Application.DTOs.Wallet
         public required string Role { get; set; }
         public required string Decision { get; set; } // Approved, Rejected, Pending
         public DateTime? ActionTime { get; set; }
-        public required string Comments { get; set; }
+        public string? Comments { get; set; }
         public required string ApprovalMethod { get; set; } // App, Email, Hardware, etc.
-        public required string SignatureHash { get; set; }
-        public required string IpAddress { get; set; }
+        public string? SignatureHash { get; set; }
+        public string? IpAddress { get; set; }
     }
 
     public class SecuritySettingsDto
