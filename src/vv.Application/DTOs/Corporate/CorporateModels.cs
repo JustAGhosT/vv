@@ -95,9 +95,9 @@ namespace vv.Application.DTOs.Corporate
     {
         public required string StepId { get; set; }
         public required string Name { get; set; }
-        public string Status { get; set; }
+        public string? Status { get; set; }
         public DateTime? CompletedAt { get; set; }
-        public string CompletedBy { get; set; }
+        public string? CompletedBy { get; set; }
         public List<string> Notes { get; set; } = new();
     }
 }
