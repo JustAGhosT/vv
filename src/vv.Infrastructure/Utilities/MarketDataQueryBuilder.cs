@@ -157,5 +157,45 @@ namespace vv.Infrastructure.Utilities
         /// Builds the final predicate
         /// </summary>
         public Expression<Func<T, bool>> Build() => _predicate;
+
+        // Static helper methods for commonly used predicates to reduce code duplication
+
+        /// <summary>
+        /// Builds a predicate for market data with all common parameters
+        /// </summary>
+        public static Expression<Func<T, bool>> BuildMarketDataPredicate(
+            string dataType,
+            string assetClass,
+            string assetId,
+            string region,
+            DateOnly asOfDate,
+            string documentType)
+        {
+            return ForMarketData(dataType, assetClass, assetId, region, asOfDate, documentType).Build();
+        }
+
+        /// <summary>
+        /// Builds a predicate for range queries with required and optional parameters
+        /// </summary>
+        public static Expression<Func<T, bool>> BuildRangeQueryPredicate(
+            string dataType,
+            string assetClass,
+            string? assetId = null,
+            DateOnly? fromDate = null,
+            DateOnly? toDate = null)
+        {
+            return ForRangeQuery(dataType, assetClass, assetId, fromDate, toDate).Build();
+        }
+
+        /// <summary>
+        /// Builds a predicate for currency pair queries with specific date
+        /// </summary>
+        public static Expression<Func<T, bool>> BuildCurrencyPairPredicate(
+            string baseCurrency,
+            string quoteCurrency,
+            DateOnly asOfDate)
+        {
+            return ForCurrencyPair(baseCurrency, quoteCurrency).WithAsOfDate(asOfDate).Build();
+        }
     }
 }

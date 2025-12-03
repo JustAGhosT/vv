@@ -45,7 +45,8 @@ namespace vv.Infrastructure.Repositories
                 "Retrieving latest market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}, Region={Region}, AsOf={AsOf}, DocType={DocType}",
                 dataType, assetClass, assetId, region, asOfDate, documentType);
 
-            var predicate = BuildMarketDataPredicate(dataType, assetClass, assetId, region, asOfDate, documentType);
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.BuildMarketDataPredicate(
+                dataType, assetClass, assetId, region, asOfDate, documentType);
             var (entity, _) = await _versioning.GetByLatestVersionAsync(predicate, cancellationToken);
             return entity;
         }
@@ -70,7 +71,7 @@ namespace vv.Infrastructure.Repositories
                 "Creating market data: DataType={DataType}, AssetClass={AssetClass}, AssetId={AssetId}",
                 data.DataType, data.AssetClass, data.AssetId);
 
-            var predicate = BuildMarketDataPredicate(
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.BuildMarketDataPredicate(
                 data.DataType, data.AssetClass, data.AssetId, 
                 data.Region, data.AsOfDate, data.DocumentType);
 
@@ -110,34 +111,9 @@ namespace vv.Infrastructure.Repositories
             DateOnly? fromDateOnly = fromDate.HasValue ? DateOnly.FromDateTime(fromDate.Value) : null;
             DateOnly? toDateOnly = toDate.HasValue ? DateOnly.FromDateTime(toDate.Value) : null;
 
-            var predicate = BuildRangeQueryPredicate(dataType, assetClass, assetId, fromDateOnly, toDateOnly);
+            var predicate = MarketDataQueryBuilder<FxSpotPriceData>.BuildRangeQueryPredicate(
+                dataType, assetClass, assetId, fromDateOnly, toDateOnly);
             return await _repository.QueryAsync(predicate, cancellationToken: cancellationToken);
-        }
-
-        // Shared helper methods to reduce code duplication
-        private static Expression<Func<FxSpotPriceData, bool>> BuildMarketDataPredicate(
-            string dataType,
-            string assetClass,
-            string assetId,
-            string region,
-            DateOnly asOfDate,
-            string documentType)
-        {
-            return MarketDataQueryBuilder<FxSpotPriceData>
-                .ForMarketData(dataType, assetClass, assetId, region, asOfDate, documentType)
-                .Build();
-        }
-
-        private static Expression<Func<FxSpotPriceData, bool>> BuildRangeQueryPredicate(
-            string dataType,
-            string assetClass,
-            string? assetId,
-            DateOnly? fromDate,
-            DateOnly? toDate)
-        {
-            return MarketDataQueryBuilder<FxSpotPriceData>
-                .ForRangeQuery(dataType, assetClass, assetId, fromDate, toDate)
-                .Build();
         }
     }
 }
