@@ -5,10 +5,10 @@ namespace vv.Application.DTOs.MarketData
 {
     public class CryptoSpotPriceDto
     {
-        public string Exchange { get; set; }
-        public string Symbol { get; set; }
-        public string BaseAsset { get; set; }
-        public string QuoteAsset { get; set; }
+        public required string Exchange { get; set; }
+        public required string Symbol { get; set; }
+        public required string BaseAsset { get; set; }
+        public required string QuoteAsset { get; set; }
         public decimal LastPrice { get; set; }
         public decimal BidPrice { get; set; }
         public decimal AskPrice { get; set; }
@@ -19,8 +19,8 @@ namespace vv.Application.DTOs.MarketData
 
     public class CryptoMarketSummaryDto
     {
-        public string BaseAsset { get; set; }
-        public string QuoteAsset { get; set; }
+        public required string BaseAsset { get; set; }
+        public required string QuoteAsset { get; set; }
         public List<ExchangePriceDto> Prices { get; set; } = new();
         public decimal HighestPrice { get; set; }
         public decimal LowestPrice { get; set; }
@@ -31,7 +31,7 @@ namespace vv.Application.DTOs.MarketData
 
     public class ExchangePriceDto
     {
-        public string Exchange { get; set; }
+        public required string Exchange { get; set; }
         public decimal Price { get; set; }
         public decimal Volume24H { get; set; }
     }
@@ -44,8 +44,8 @@ namespace vv.Application.DTOs.MarketData
 
     public class MarketDepthDto
     {
-        public string Exchange { get; set; }
-        public string Symbol { get; set; }
+        public required string Exchange { get; set; }
+        public required string Symbol { get; set; }
         public DateTime Timestamp { get; set; }
         public List<PriceVolumeDto> Bids { get; set; } = new();
         public List<PriceVolumeDto> Asks { get; set; } = new();
@@ -63,10 +63,10 @@ namespace vv.Application.DTOs.MarketData
 
     public class MarketTickerDto
     {
-        public string Exchange { get; set; }
-        public string Symbol { get; set; }
-        public string BaseAsset { get; set; }
-        public string QuoteAsset { get; set; }
+        public required string Exchange { get; set; }
+        public required string Symbol { get; set; }
+        public required string BaseAsset { get; set; }
+        public required string QuoteAsset { get; set; }
         public decimal OpenPrice { get; set; }
         public decimal HighPrice { get; set; }
         public decimal LowPrice { get; set; }
