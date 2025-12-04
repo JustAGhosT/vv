@@ -117,7 +117,7 @@ namespace vv.Infrastructure.Repositories
                     $"No exchange rate found for {baseCurrency}/{quoteCurrency} as of {asOfDate}");
             }
             
-            return FxSpotPriceRate.FromEntity(entity);
+            return FxSpotPriceRate.FromEntity(entity)!;
         }
 
         /// <inheritdoc/>

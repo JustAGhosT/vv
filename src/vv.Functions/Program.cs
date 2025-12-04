@@ -13,8 +13,9 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using vv.Domain.Events;
 using vv.Domain.Models;
+using vv.Domain.Repositories.Components;
 using vv.Infrastructure.Events;
-using vv.Infrastructure.Repositories;
+using vv.Infrastructure.Repositories.Components;
 using vv.Infrastructure.Serialization.JsonConverters;
 using vv.Functions.OpenApi;
 // Removed this import to resolve ambiguity

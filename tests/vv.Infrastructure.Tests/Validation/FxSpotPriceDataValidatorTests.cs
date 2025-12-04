@@ -25,6 +25,7 @@ namespace vv.Infrastructure.Tests.Validation
                 Price = 1.05m,
                 Side = PriceSide.Bid,
                 SchemaVersion = "1.0",
+                Version = 1,
                 Region = "global",
                 DocumentType = "price"
             };
@@ -62,6 +63,7 @@ namespace vv.Infrastructure.Tests.Validation
                 Price = 1.05m,
                 Side = PriceSide.Bid,
                 SchemaVersion = "1.0",
+                Version = 1,
                 Region = "global",
                 DocumentType = "price"
             };
@@ -88,6 +90,7 @@ namespace vv.Infrastructure.Tests.Validation
                 Price = -1.05m, // Negative value
                 Side = PriceSide.Mid,
                 SchemaVersion = "1.0",
+                Version = 1,
                 Region = "global",
                 DocumentType = "price"
             };

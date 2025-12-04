@@ -18,10 +18,10 @@ namespace vv.Infrastructure.Extensions
             var parameter = Expression.Parameter(typeof(T));
 
             var leftVisitor = new ReplaceExpressionVisitor(left.Parameters[0], parameter);
-            var leftBody = leftVisitor.Visit(left.Body);
+            var leftBody = leftVisitor.Visit(left.Body)!;
 
             var rightVisitor = new ReplaceExpressionVisitor(right.Parameters[0], parameter);
-            var rightBody = rightVisitor.Visit(right.Body);
+            var rightBody = rightVisitor.Visit(right.Body)!;
 
             return Expression.Lambda<Func<T, bool>>(
                 Expression.AndAlso(leftBody, rightBody), parameter);
@@ -37,10 +37,10 @@ namespace vv.Infrastructure.Extensions
             var parameter = Expression.Parameter(typeof(T));
 
             var leftVisitor = new ReplaceExpressionVisitor(left.Parameters[0], parameter);
-            var leftBody = leftVisitor.Visit(left.Body);
+            var leftBody = leftVisitor.Visit(left.Body)!;
 
             var rightVisitor = new ReplaceExpressionVisitor(right.Parameters[0], parameter);
-            var rightBody = rightVisitor.Visit(right.Body);
+            var rightBody = rightVisitor.Visit(right.Body)!;
 
             return Expression.Lambda<Func<T, bool>>(
                 Expression.OrElse(leftBody, rightBody), parameter);
@@ -57,7 +57,7 @@ namespace vv.Infrastructure.Extensions
                 _newValue = newValue;
             }
 
-            public override Expression Visit(Expression node)
+            public override Expression? Visit(Expression? node)
             {
                 if (node == _oldValue)
                     return _newValue;

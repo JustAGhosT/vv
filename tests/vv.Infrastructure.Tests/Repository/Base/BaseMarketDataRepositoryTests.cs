@@ -9,12 +9,26 @@ using vv.Infrastructure.Repositories;
 
 namespace vv.Infrastructure.Tests.Repository.Base
 {
+    /// <summary>
+    /// Concrete test implementation of CosmosRepository for FxSpotPriceData
+    /// </summary>
+    public class TestFxSpotPriceDataRepository : CosmosRepository<FxSpotPriceData>
+    {
+        public TestFxSpotPriceDataRepository(
+            Container container,
+            ILogger logger,
+            IEventPublisher? eventPublisher = null)
+            : base(container, logger, eventPublisher)
+        {
+        }
+    }
+
     public abstract class BaseMarketDataRepositoryTests
     {
         protected readonly Mock<Container> MockContainer;
-        protected readonly Mock<ILogger<CosmosRepository<FxSpotPriceData>>> MockLogger;
+        protected readonly Mock<ILogger<TestFxSpotPriceDataRepository>> MockLogger;
         protected readonly Mock<IEventPublisher> MockEventPublisher;
-        protected readonly CosmosRepository<FxSpotPriceData> Repository;
+        protected readonly TestFxSpotPriceDataRepository Repository;
         protected readonly string Id;
         protected readonly string PartitionKey;
         protected readonly FxSpotPriceData MarketData;
@@ -22,10 +36,10 @@ namespace vv.Infrastructure.Tests.Repository.Base
         protected BaseMarketDataRepositoryTests()
         {
             MockContainer = new Mock<Container>();
-            MockLogger = new Mock<ILogger<CosmosRepository<FxSpotPriceData>>>();
+            MockLogger = new Mock<ILogger<TestFxSpotPriceDataRepository>>();
             MockEventPublisher = new Mock<IEventPublisher>();
 
-            Repository = new CosmosRepository<FxSpotPriceData>(
+            Repository = new TestFxSpotPriceDataRepository(
                 MockContainer.Object,
                 MockLogger.Object,
                 MockEventPublisher.Object);

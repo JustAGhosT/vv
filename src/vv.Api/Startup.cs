@@ -39,8 +39,8 @@ namespace vv.Api
             // Add Application layer with all its services
             services.AddApplication();
 
-            // Add Infrastructure layer dependencies
-            services.AddInfrastructure(Configuration);
+            // TODO: Add Infrastructure layer dependencies when AddInfrastructure extension method is implemented
+            // services.AddInfrastructure(Configuration);
 
             // Add CORS policy
             services.AddCors(options =>

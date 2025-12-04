@@ -332,7 +332,7 @@ namespace vv.Infrastructure.Repositories
         /// <summary>
         /// Publishes an entity created event
         /// </summary>
-        protected virtual Task PublishEntityCreatedEventAsync(T entity, CancellationToken cancellationToken)
+        protected new virtual Task PublishEntityCreatedEventAsync(T entity, CancellationToken cancellationToken)
         {
             if (_eventPublisher == null || entity == null)
                 return Task.CompletedTask;

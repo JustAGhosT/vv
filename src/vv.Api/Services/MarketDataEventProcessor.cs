@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using vv.Domain.Events.IntegrationEvents;
 using vv.Domain.Models;
 
-namespace vv.Application.Services
+namespace vv.Api.Services
 {
     public interface IMarketDataEventProcessor
     {

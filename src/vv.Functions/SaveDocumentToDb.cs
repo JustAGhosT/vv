@@ -3,7 +3,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using vv.Infrastructure.Repositories;
+using vv.Infrastructure.Repositories.Components;
 using vv.Infrastructure.Mapping;
 using vv.Infrastructure.Schemas;
 using vv.Infrastructure.Serialization;
@@ -175,7 +175,7 @@ public class SaveDocumentToDb
         IMarketDataEntity result;
         try
         {
-            result = await _repository.AddAsync(domainData);
+            result = await _repository.CreateAsync(domainData);
         }
         catch (Exception ex)
         {

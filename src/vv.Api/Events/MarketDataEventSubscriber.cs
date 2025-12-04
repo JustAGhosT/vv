@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polly;
 using vv.Domain.Events;
-using vv.Application.Services;
+using vv.Api.Services;
 using vv.Domain.Models;
 using vv.Domain.Events.IntegrationEvents;
 
-namespace vv.Application.Events
+namespace vv.Api.Events
 {
     /// <summary>
     /// Subscribes to market data events and processes them with retry capability
