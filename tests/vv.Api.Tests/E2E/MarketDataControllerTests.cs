@@ -50,7 +50,8 @@ namespace vv.Api.Tests.E2E
                         DocumentType = "official",
                         Price = 1.05m,
                         AsOfDate = DateOnly.FromDateTime(DateTime.Today),
-                        SchemaVersion = "1.0"
+                        SchemaVersion = "1.0",
+                        Version = 1
                     };
 
                     mockService.Setup(s => s.GetLatestMarketDataAsync(
@@ -142,7 +143,8 @@ namespace vv.Api.Tests.E2E
                 DocumentType = "official",
                 Price = 1.05m,
                 AsOfDate = DateOnly.FromDateTime(DateTime.Today),
-                SchemaVersion = "1.0"
+                SchemaVersion = "1.0",
+                Version = 1
             };
 
             // Act

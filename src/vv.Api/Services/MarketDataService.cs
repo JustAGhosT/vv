@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 using vv.Domain.Events;
 using vv.Domain.Validation;
 using vv.Domain.Models;
-using vv.Infrastructure.Repositories;
+using vv.Domain.Repositories.Components;
 using vv.Core.Validation;
 
-namespace vv.Application.Services
+namespace vv.Api.Services
 {
     public interface IMarketDataService<T> where T : IMarketDataEntity
     {
-        Task<string> PublishMarketDataAsync(T marketData);
+        Task<string> PublishMarketDataAsync(T marketData, CancellationToken cancellationToken = default);
         Task<T?> GetLatestMarketDataAsync(
             string dataType, string assetClass, string assetId, string region,
             DateOnly asOfDate, string documentType,
-            CancellationToken cancellationToken = default);  // Added cancellationToken parameter
+            CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> QueryMarketDataAsync(
             string dataType, string assetClass, string? assetId = null,
             DateTime? fromDate = null, DateTime? toDate = null,
@@ -25,13 +25,13 @@ namespace vv.Application.Services
 
     public class MarketDataService<T> : IMarketDataService<T> where T : class, IMarketDataEntity
     {
-        private readonly CosmosRepository<T> _repository;
-        private readonly IMarketDataEventPublisher _eventPublisher;
+        private readonly IRepository<T> _repository;
+        private readonly IEventPublisher _eventPublisher;
         private readonly IValidator<T> _validator;
 
         public MarketDataService(
-            CosmosRepository<T> repository,
-            IMarketDataEventPublisher eventPublisher,
+            IRepository<T> repository,
+            IEventPublisher eventPublisher,
             IValidator<T> validator)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
@@ -39,42 +39,39 @@ namespace vv.Application.Services
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
-        public async Task<string> PublishMarketDataAsync(T marketData)
+        public async Task<string> PublishMarketDataAsync(T marketData, CancellationToken cancellationToken = default)
         {
             if (marketData == null)
                 throw new ArgumentNullException(nameof(marketData));
-            var validationResult = await _validator.ValidateAsync(marketData);
+            
+            var validationResult = await _validator.ValidateAsync(marketData, cancellationToken);
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult.Errors);
             }
 
-            var id = await _repository.AddAsync(marketData);
-            await _eventPublisher.PublishDataChangedEventAsync(marketData);
+            var result = await _repository.CreateAsync(marketData, cancellationToken);
+            await _eventPublisher.PublishAsync(new EntityCreatedEvent<T>(result), cancellationToken: cancellationToken);
 
-            // Return the repository's ID directly instead of re-deriving it
-            return id?.ToString() ?? string.Empty;
+            return result?.Id ?? string.Empty;
         }
 
-        public async Task<T?> GetLatestMarketDataAsync(
+        public Task<T?> GetLatestMarketDataAsync(
             string dataType, string assetClass, string assetId, string region,
             DateOnly asOfDate, string documentType,
-            CancellationToken cancellationToken = default)  // Added cancellationToken parameter
+            CancellationToken cancellationToken = default)
         {
-            var result = await _repository.GetLatestMarketDataAsync(
-                dataType, assetClass, assetId, region, asOfDate, documentType,
-                cancellationToken);  // Pass cancellationToken to repository
-            return result;
+            // TODO: Implement using repository query methods
+            throw new NotImplementedException("GetLatestMarketDataAsync is not yet implemented");
         }
 
-        public async Task<IEnumerable<T>> QueryMarketDataAsync(
+        public Task<IEnumerable<T>> QueryMarketDataAsync(
             string dataType, string assetClass, string? assetId = null,
             DateTime? fromDate = null, DateTime? toDate = null,
             CancellationToken cancellationToken = default)
         {
-            return await _repository.QueryByRangeAsync(
-                dataType, assetClass, assetId, fromDate, toDate,
-                cancellationToken);  // Pass cancellationToken to repository
+            // TODO: Implement using repository query methods
+            throw new NotImplementedException("QueryMarketDataAsync is not yet implemented");
         }
     }
 }

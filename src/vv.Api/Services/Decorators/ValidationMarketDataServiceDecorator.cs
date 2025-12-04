@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using vv.Domain.Validation;
 using vv.Domain.Models;
 using vv.Core.Validation;
+using vv.Api.Services;
 
-namespace vv.Application.Services.Decorators
+namespace vv.Api.Services.Decorators
 {
     public class ValidationMarketDataServiceDecorator<T> : ServiceValidationDecorator<IMarketDataService<T>>
         where T : class, IMarketDataEntity
