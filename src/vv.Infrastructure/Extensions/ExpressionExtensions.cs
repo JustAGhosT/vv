@@ -57,7 +57,7 @@ namespace vv.Infrastructure.Extensions
                 _newValue = newValue;
             }
 
-            public override Expression Visit(Expression node)
+            public override Expression? Visit(Expression? node)
             {
                 if (node == _oldValue)
                     return _newValue;

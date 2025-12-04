@@ -23,6 +23,7 @@ namespace vv.Infrastructure.Tests.Mapping
                 Price = 1.05m,
                 Side = PriceSide.Bid,
                 SchemaVersion = "1.0",
+                Version = 1,
                 AssetClass = "fx",
                 DataType = "spotprice",
                 Region = "global",
@@ -113,6 +114,7 @@ namespace vv.Infrastructure.Tests.Mapping
                 AsOfTime = TimeOnly.FromDateTime(DateTime.Now),  // Added missing property
                 // Add required properties
                 SchemaVersion = "1.0",
+                Version = 1,
                 AssetClass = "fx",
                 DataType = "spotprice",
                 Region = "global",

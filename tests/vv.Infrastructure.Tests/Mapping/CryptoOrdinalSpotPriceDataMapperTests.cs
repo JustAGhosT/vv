@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Xunit;
 using vv.Domain; // Add this for PriceSide enum
 using vv.Domain.Models;
-using vv.Domain.Models;
 using vv.Infrastructure.Mapping;
 using vv.Infrastructure.Serialization;
 
@@ -24,6 +23,7 @@ namespace vv.Infrastructure.Tests.Mapping
                 Price = 50000.00m,
                 Side = PriceSide.Mid,
                 SchemaVersion = "1.0",
+                Version = 1,
                 AssetClass = "crypto",
                 DataType = "spotprice",
                 Region = "global",
@@ -146,6 +146,7 @@ namespace vv.Infrastructure.Tests.Mapping
                 AsOfTime = TimeOnly.FromDateTime(DateTime.Now),  // Added missing property
                 // Add required properties
                 SchemaVersion = "1.0",
+                Version = 1,
                 AssetClass = "crypto",
                 DataType = "spotprice",
                 Region = "global",
@@ -181,6 +182,7 @@ namespace vv.Infrastructure.Tests.Mapping
                 Price = 50000.00m,
                 Side = side,  // Use the provided enum value
                 SchemaVersion = "1.0",
+                Version = 1,
                 AssetClass = "crypto",
                 DataType = "spotprice",
                 Region = "global",
@@ -292,6 +294,7 @@ namespace vv.Infrastructure.Tests.Mapping
                 Price = 50000.00m,
                 Side = side,
                 SchemaVersion = "1.0",
+                Version = 1,
                 AssetClass = "crypto",
                 DataType = "spotprice",
                 Region = "global",

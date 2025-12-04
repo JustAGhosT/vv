@@ -1,6 +1,5 @@
 using vv.Domain;
 using vv.Domain.Models;
-using vv.Domain.Models;
 using vv.Infrastructure.Serialization;
 using System;
 using System.Collections.Generic;

@@ -66,15 +66,16 @@ namespace vv.Infrastructure.Tests.Repository
         }
 
         [Fact]
-        public async Task UpdateAsync_ShouldCallUpsertItemAsync()
+        public async Task UpdateAsync_ShouldCallReplaceItemAsync()
         {
             // Arrange
             var mockResponse = new Mock<ItemResponse<FxSpotPriceData>>();
             mockResponse.Setup(r => r.Resource).Returns(MarketData);
 
             MockContainer
-                .Setup(c => c.UpsertItemAsync(
+                .Setup(c => c.ReplaceItemAsync(
                     It.Is<FxSpotPriceData>(m => m.Id == MarketData.Id),
+                    It.Is<string>(id => id == MarketData.Id),
                     It.Is<PartitionKey>(pk => pk.ToString().Contains(PartitionKey)),
                     It.IsAny<ItemRequestOptions>(),
                     It.IsAny<CancellationToken>()))
@@ -88,8 +89,9 @@ namespace vv.Infrastructure.Tests.Repository
             Assert.Equal(MarketData.Id, result.Id);
 
             MockContainer.Verify(c =>
-                c.UpsertItemAsync(
+                c.ReplaceItemAsync(
                     It.Is<FxSpotPriceData>(m => m.Id == MarketData.Id),
+                    It.Is<string>(id => id == MarketData.Id),
                     It.Is<PartitionKey>(pk => pk.ToString().Contains(PartitionKey)),
                     It.IsAny<ItemRequestOptions>(),
                     It.IsAny<CancellationToken>()),
@@ -105,7 +107,7 @@ namespace vv.Infrastructure.Tests.Repository
         }
 
         [Fact]
-        public async Task AddAsync_ShouldCallCreateItemAsync()
+        public async Task CreateAsync_ShouldCallCreateItemAsync()
         {
             // Arrange
             var mockResponse = new Mock<ItemResponse<FxSpotPriceData>>();
@@ -120,7 +122,7 @@ namespace vv.Infrastructure.Tests.Repository
                 .ReturnsAsync(mockResponse.Object);
 
             // Act
-            var result = await Repository.AddAsync(MarketData);
+            var result = await Repository.CreateAsync(MarketData);
 
             // Assert
             Assert.NotNull(result);

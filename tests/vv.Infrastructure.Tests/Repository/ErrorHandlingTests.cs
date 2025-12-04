@@ -27,7 +27,7 @@ namespace vv.Infrastructure.Tests.Repository
                 .ThrowsAsync(cosmosException);
 
             // Act & Assert
-            await Assert.ThrowsAsync<CosmosException>(() => Repository.AddAsync(MarketData));
+            await Assert.ThrowsAsync<CosmosException>(() => Repository.CreateAsync(MarketData));
 
             // Verify no event was published due to failure
             MockEventPublisher.Verify(e =>
