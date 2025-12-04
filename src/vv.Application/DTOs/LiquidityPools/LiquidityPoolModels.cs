@@ -5,15 +5,15 @@ namespace vv.Application.DTOs.LiquidityPools
 {
     public class LiquidityPoolDto
     {
-        public string PoolId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string RiskCategory { get; set; } // Conservative, Moderate, Aggressive
+        public required string PoolId { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string RiskCategory { get; set; } // Conservative, Moderate, Aggressive
         public decimal TotalValueUsd { get; set; }
         public Dictionary<string, decimal> AssetAllocations { get; set; } = new(); // Asset → Percentage
         public List<VaultStrategyDto> ActiveStrategies { get; set; } = new();
-        public PoolPerformanceMetricsDto Performance { get; set; }
-        public LiquidityDistributionDto Distribution { get; set; }
+        public required PoolPerformanceMetricsDto Performance { get; set; }
+        public required LiquidityDistributionDto Distribution { get; set; }
         public DateTime LastRebalanced { get; set; }
         public List<string> SupportedAssets { get; set; } = new();
         public decimal ManagementFeeRate { get; set; } // Annual fee %
@@ -50,10 +50,10 @@ namespace vv.Application.DTOs.LiquidityPools
 
     public class VaultStrategyDto
     {
-        public string StrategyId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; } // Market Making, Arbitrage, Yield Farming, etc.
+        public required string StrategyId { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; } // Market Making, Arbitrage, Yield Farming, etc.
         public Dictionary<string, decimal> AllocationPercentages { get; set; } = new(); // Asset → %
         public List<string> TargetExchanges { get; set; } = new();
         public Dictionary<string, decimal> StrategyParameters { get; set; } = new(); // Parameter name → value
@@ -90,27 +90,27 @@ namespace vv.Application.DTOs.LiquidityPools
 
     public class PoolRebalanceDto
     {
-        public string RebalanceId { get; set; }
-        public string PoolId { get; set; }
+        public required string RebalanceId { get; set; }
+        public required string PoolId { get; set; }
         public DateTime ScheduledTime { get; set; }
         public DateTime? ExecutedTime { get; set; }
-        public string Status { get; set; } // Scheduled, InProgress, Completed, Failed
+        public required string Status { get; set; } // Scheduled, InProgress, Completed, Failed
         public List<AssetAllocationChangeDto> AllocationChanges { get; set; } = new();
         public List<string> AffectedVenues { get; set; } = new();
         public decimal EstimatedFeesCost { get; set; }
         public decimal ActualFeesCost { get; set; }
-        public string ExecutedBy { get; set; }
-        public string RebalanceReason { get; set; }
+        public required string ExecutedBy { get; set; }
+        public required string RebalanceReason { get; set; }
         public Dictionary<string, decimal> PerformanceImpact { get; set; } = new();
     }
 
     public class AssetAllocationChangeDto
     {
-        public string Asset { get; set; }
+        public required string Asset { get; set; }
         public decimal PreviousPercentage { get; set; }
         public decimal NewPercentage { get; set; }
         public decimal AbsoluteChange { get; set; }
         public decimal AmountUsd { get; set; }
-        public string Direction { get; set; } // Increase, Decrease
+        public required string Direction { get; set; } // Increase, Decrease
     }
 }

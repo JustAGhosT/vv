@@ -5,8 +5,8 @@ namespace vv.Application.DTOs.Dashboard
 {
     public class CorporateDashboardSummaryDto
     {
-        public string ClientId { get; set; }
-        public string CompanyName { get; set; }
+        public required string ClientId { get; set; }
+        public required string CompanyName { get; set; }
         public decimal TotalAssetValueUsd { get; set; }
         public decimal TotalProfitLossUsd { get; set; }
         public decimal ProfitLossPercentage { get; set; }
@@ -26,54 +26,54 @@ namespace vv.Application.DTOs.Dashboard
 
     public class DashboardVaultDto
     {
-        public string VaultId { get; set; }
-        public string Name { get; set; }
-        public string RiskCategory { get; set; }
+        public required string VaultId { get; set; }
+        public required string Name { get; set; }
+        public required string RiskCategory { get; set; }
         public decimal AllocationPercentage { get; set; }
         public decimal CurrentValueUsd { get; set; }
         public decimal ProfitLossUsd { get; set; }
         public decimal ProfitLossPercentage { get; set; }
         public decimal CurrentYield { get; set; }
         public decimal UtilizationRate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public Dictionary<string, decimal> TopHoldings { get; set; } = new(); // Top 5 assets
         public List<PerformanceSnapshotDto> Performance { get; set; } = new(); // Daily for last 30 days
     }
 
     public class DashboardAlertDto
     {
-        public string AlertId { get; set; }
-        public string Type { get; set; } // Risk, Performance, Compliance, System
-        public string Severity { get; set; }
-        public string Title { get; set; }
-        public string Message { get; set; }
+        public required string AlertId { get; set; }
+        public required string Type { get; set; } // Risk, Performance, Compliance, System
+        public required string Severity { get; set; }
+        public required string Title { get; set; }
+        public required string Message { get; set; }
         public DateTime Timestamp { get; set; }
         public bool IsRead { get; set; }
         public bool RequiresAction { get; set; }
-        public string ActionUrl { get; set; }
+        public required string ActionUrl { get; set; }
     }
 
     public class DashboardUpcomingEventDto
     {
-        public string EventId { get; set; }
-        public string Type { get; set; } // Rebalance, Report, Regulatory Filing, etc.
-        public string Title { get; set; }
+        public required string EventId { get; set; }
+        public required string Type { get; set; } // Rebalance, Report, Regulatory Filing, etc.
+        public required string Title { get; set; }
         public DateTime ScheduledFor { get; set; }
-        public string Status { get; set; }
-        public string Description { get; set; }
+        public required string Status { get; set; }
+        public required string Description { get; set; }
         public bool RequiresApproval { get; set; }
     }
 
     public class UserActivityDto
     {
-        public string ActivityId { get; set; }
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string Action { get; set; } // Login, Withdrawal Request, Setting Change, etc.
+        public required string ActivityId { get; set; }
+        public required string UserId { get; set; }
+        public required string UserName { get; set; }
+        public required string Action { get; set; } // Login, Withdrawal Request, Setting Change, etc.
         public DateTime Timestamp { get; set; }
-        public string IpAddress { get; set; }
-        public string Device { get; set; }
-        public string Location { get; set; }
+        public required string IpAddress { get; set; }
+        public required string Device { get; set; }
+        public required string Location { get; set; }
         public bool IsSuccessful { get; set; }
     }
 
@@ -102,9 +102,9 @@ namespace vv.Application.DTOs.Dashboard
 
     public class DashboardPoolSummaryDto
     {
-        public string PoolId { get; set; }
-        public string Name { get; set; }
-        public string RiskCategory { get; set; }
+        public required string PoolId { get; set; }
+        public required string Name { get; set; }
+        public required string RiskCategory { get; set; }
         public decimal TotalValueUsd { get; set; }
         public decimal ReturnCurrentMonth { get; set; }
         public decimal ReturnYtd { get; set; }

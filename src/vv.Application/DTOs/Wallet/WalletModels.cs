@@ -6,13 +6,13 @@ namespace vv.Application.DTOs.Wallet
 {
     public abstract class BaseWalletDto
     {
-        public string WalletId { get; set; }
-        public string Name { get; set; }
+        public required string WalletId { get; set; }
+        public required string Name { get; set; }
         public Dictionary<string, decimal> Balances { get; set; } = new();
         public decimal TotalValueUsd { get; set; }
         public List<WalletAddressDto> Addresses { get; set; } = new();
         public DateTime CreatedAt { get; set; }
-        public string Status { get; set; } // Active, Frozen, Closed
+        public required string Status { get; set; } // Active, Frozen, Closed
         public List<WalletTransactionDto> RecentTransactions { get; set; } = new();
         public List<string> Tags { get; set; } = new();
     }
@@ -29,28 +29,28 @@ namespace vv.Application.DTOs.Wallet
 
     public class CorporateWalletDto : BaseWalletDto
     {
-        public string CorporateClientId { get; set; }
-        public MultiSigConfigDto MultiSigConfig { get; set; }
+        public required string CorporateClientId { get; set; }
+        public required MultiSigConfigDto MultiSigConfig { get; set; }
         public List<WalletPermissionDto> UserPermissions { get; set; } = new();
         public List<WalletPolicyDto> Policies { get; set; } = new();
         public List<TransactionApprovalWorkflowDto> ApprovalWorkflows { get; set; } = new();
         public List<ExternalIntegrationDto> ExternalIntegrations { get; set; } = new();
         public bool HasTreasuryIntegration { get; set; }
-        public AuditConfigDto AuditConfig { get; set; }
-        public ComplianceSettingsDto ComplianceSettings { get; set; }
+        public required AuditConfigDto AuditConfig { get; set; }
+        public required ComplianceSettingsDto ComplianceSettings { get; set; }
     }
 
     public class WalletAddressDto
     {
-        public string AddressId { get; set; }
-        public string Address { get; set; }
-        public string Network { get; set; } // Ethereum, Bitcoin, etc.
-        public string AddressType { get; set; } // Hot, Cold, MultiSig, etc.
-        public string Label { get; set; }
+        public required string AddressId { get; set; }
+        public required string Address { get; set; }
+        public required string Network { get; set; } // Ethereum, Bitcoin, etc.
+        public required string AddressType { get; set; } // Hot, Cold, MultiSig, etc.
+        public required string Label { get; set; }
         public bool IsDefault { get; set; }
         public Dictionary<string, decimal> Balances { get; set; } = new();
         public DateTime LastUsed { get; set; }
-        public string Status { get; set; } // Active, Archived
+        public required string Status { get; set; } // Active, Archived
         public int AddressIndex { get; set; } // For HD wallets
         public List<string> AllowedOperations { get; set; } = new(); // Deposit, Withdrawal, etc.
     }
@@ -60,31 +60,31 @@ namespace vv.Application.DTOs.Wallet
         public int RequiredSignatures { get; set; }
         public int TotalSigners { get; set; }
         public List<SignerDto> Signers { get; set; } = new();
-        public string MultiSigType { get; set; } // Gnosis Safe, MPC, Smart Contract, etc.
-        public string ContractAddress { get; set; } // If smart contract-based
+        public required string MultiSigType { get; set; } // Gnosis Safe, MPC, Smart Contract, etc.
+        public required string ContractAddress { get; set; } // If smart contract-based
         public Dictionary<string, int> ThresholdsByAmount { get; set; } = new(); // Amount → required signatures
         public List<RoleThresholdDto> RoleThresholds { get; set; } = new();
-        public string RecoveryMethod { get; set; }
+        public required string RecoveryMethod { get; set; }
         public List<SignerDto> RecoverySigners { get; set; } = new();
     }
 
     public class SignerDto
     {
-        public string SignerId { get; set; }
-        public string UserId { get; set; }
-        public string Name { get; set; }
-        public string Role { get; set; }
-        public string PublicKey { get; set; }
+        public required string SignerId { get; set; }
+        public required string UserId { get; set; }
+        public required string Name { get; set; }
+        public required string Role { get; set; }
+        public required string PublicKey { get; set; }
         public DateTime AddedAt { get; set; }
         public bool IsActive { get; set; }
-        public string DeviceInfo { get; set; }
+        public required string DeviceInfo { get; set; }
         public List<string> SigningMethods { get; set; } = new(); // Hardware, Mobile, Email, etc.
         public List<SignerLimitDto> TransactionLimits { get; set; } = new();
     }
 
     public class SignerLimitDto
     {
-        public string AssetType { get; set; } // Specific asset or "Any"
+        public required string AssetType { get; set; } // Specific asset or "Any"
         public decimal DailyLimit { get; set; }
         public decimal SingleTransactionLimit { get; set; }
         public bool RequiresAdditionalApproval { get; set; }
@@ -93,16 +93,16 @@ namespace vv.Application.DTOs.Wallet
 
     public class RoleThresholdDto
     {
-        public string Role { get; set; }
+        public required string Role { get; set; }
         public decimal AmountThreshold { get; set; }
         public int RequiredSignatures { get; set; }
     }
 
     public class WalletPermissionDto
     {
-        public string UserId { get; set; }
-        public string Name { get; set; }
-        public string Role { get; set; }
+        public required string UserId { get; set; }
+        public required string Name { get; set; }
+        public required string Role { get; set; }
         public List<string> AllowedOperations { get; set; } = new(); // View, Initiate, Approve, etc.
         public Dictionary<string, decimal> TransactionLimits { get; set; } = new(); // Asset → amount
         public bool CanManageUsers { get; set; }
@@ -115,12 +115,12 @@ namespace vv.Application.DTOs.Wallet
 
     public class WalletPolicyDto
     {
-        public string PolicyId { get; set; }
-        public string Name { get; set; }
-        public string Type { get; set; } // Spending, Whitelist, Time-lock, etc.
+        public required string PolicyId { get; set; }
+        public required string Name { get; set; }
+        public required string Type { get; set; } // Spending, Whitelist, Time-lock, etc.
         public Dictionary<string, object> Parameters { get; set; } = new();
         public bool IsEnabled { get; set; }
-        public string EnforcementType { get; set; } // Hard (reject), Soft (warn)
+        public required string EnforcementType { get; set; } // Hard (reject), Soft (warn)
         public List<string> ExemptRoles { get; set; } = new();
         public DateTime EffectiveFrom { get; set; }
         public DateTime? ExpiresAt { get; set; }
@@ -128,10 +128,10 @@ namespace vv.Application.DTOs.Wallet
 
     public class TransactionApprovalWorkflowDto
     {
-        public string WorkflowId { get; set; }
-        public string Name { get; set; }
+        public required string WorkflowId { get; set; }
+        public required string Name { get; set; }
         public decimal AmountThreshold { get; set; }
-        public string AssetType { get; set; } // Specific asset or "Any"
+        public required string AssetType { get; set; } // Specific asset or "Any"
         public List<ApprovalStepDto> ApprovalSteps { get; set; } = new();
         public int MaxApprovalTimeHours { get; set; }
         public bool RequiresJustification { get; set; }
