@@ -28,14 +28,14 @@ namespace vv.Application.DTOs.Governance
 
     public class ProposalActionDto
     {
-        public string ActionId { get; set; }
-        public string Type { get; set; } // ParameterChange, FundTransfer, CodeExecution, etc.
-        public string Target { get; set; } // Contract/system to affect
-        public string Function { get; set; } // Function to call
+        public required string ActionId { get; set; }
+        public required string Type { get; set; } // ParameterChange, FundTransfer, CodeExecution, etc.
+        public required string Target { get; set; } // Contract/system to affect
+        public required string Function { get; set; } // Function to call
         public Dictionary<string, object> Parameters { get; set; } = new();
-        public string Description { get; set; }
-        public string ExecutionStatus { get; set; } // Pending, Executed, Failed
-        public string TransactionHash { get; set; }
+        public required string Description { get; set; }
+        public required string ExecutionStatus { get; set; } // Pending, Executed, Failed
+        public string? TransactionHash { get; set; }
         public DateTime? ExecutedAt { get; set; }
         public decimal EstimatedGasCost { get; set; }
         public bool RequiresTimelock { get; set; }
@@ -74,46 +74,46 @@ namespace vv.Application.DTOs.Governance
 
     public class VoteBreakdownDto
     {
-        public string VoterAddress { get; set; }
-        public string VoterName { get; set; }
-        public string Vote { get; set; }
+        public required string VoterAddress { get; set; }
+        public string? VoterName { get; set; }
+        public required string Vote { get; set; }
         public decimal VotingPower { get; set; }
         public decimal PercentageOfTotal { get; set; }
     }
 
     public class DelegationDto
     {
-        public string DelegatorAddress { get; set; }
-        public string DelegatorName { get; set; }
-        public string DelegateAddress { get; set; }
-        public string DelegateName { get; set; }
+        public required string DelegatorAddress { get; set; }
+        public string? DelegatorName { get; set; }
+        public required string DelegateAddress { get; set; }
+        public string? DelegateName { get; set; }
         public decimal Amount { get; set; }
-        public string TokenSymbol { get; set; }
+        public required string TokenSymbol { get; set; }
         public DateTime DelegatedAt { get; set; }
         public DateTime? ExpiresAt { get; set; }
-        public string Status { get; set; } // Active, Expired, Revoked
-        public string TransactionHash { get; set; }
+        public required string Status { get; set; } // Active, Expired, Revoked
+        public string? TransactionHash { get; set; }
     }
 
     public class ProposalDiscussionDto
     {
-        public string CommentId { get; set; }
-        public string ProposalId { get; set; }
-        public string AuthorAddress { get; set; }
-        public string AuthorName { get; set; }
-        public string Content { get; set; }
+        public required string CommentId { get; set; }
+        public required string ProposalId { get; set; }
+        public required string AuthorAddress { get; set; }
+        public string? AuthorName { get; set; }
+        public required string Content { get; set; }
         public DateTime PostedAt { get; set; }
         public int UpvoteCount { get; set; }
         public int DownvoteCount { get; set; }
         public List<ProposalDiscussionDto> Replies { get; set; } = new();
         public bool IsEdited { get; set; }
-        public string ParentCommentId { get; set; }
+        public string? ParentCommentId { get; set; }
     }
 
     public class GovernanceSettingsDto
     {
-        public string GovernanceId { get; set; }
-        public string Name { get; set; } // e.g., "Veritas Vault Governance"
+        public required string GovernanceId { get; set; }
+        public required string Name { get; set; } // e.g., "Veritas Vault Governance"
         public Dictionary<string, decimal> ProposalThresholds { get; set; } = new(); // Token → amount needed to propose
         public int MinimumVotingPeriod { get; set; } // In hours
         public int MaximumVotingPeriod { get; set; } // In hours
@@ -131,8 +131,8 @@ namespace vv.Application.DTOs.Governance
 
     public class VotingPowerDto
     {
-        public string Address { get; set; }
-        public string Name { get; set; } // If known
+        public required string Address { get; set; }
+        public string? Name { get; set; } // If known
         public decimal TotalVotingPower { get; set; }
         public Dictionary<string, decimal> TokenBreakdown { get; set; } = new(); // Token → amount
         public List<DelegationDto> ReceivedDelegations { get; set; } = new();
@@ -170,14 +170,14 @@ namespace vv.Application.DTOs.Governance
 
     public class CorporateGovernanceRightsDto
     {
-        public string ClientId { get; set; }
-        public string CompanyName { get; set; }
+        public required string ClientId { get; set; }
+        public required string CompanyName { get; set; }
         public decimal TotalVotingPower { get; set; }
         public decimal VotingPowerPercentage { get; set; } // % of total system voting power
         public List<string> DelegatedAddresses { get; set; } = new(); // Addresses that can vote on behalf
         public Dictionary<string, VotingPermissionDto> UserVotingRights { get; set; } = new();
         public bool AutomaticVoteEnabled { get; set; }
-        public string DefaultVoteStrategy { get; set; } // e.g., "Always Abstain", "Follow Recommendation"
+        public string? DefaultVoteStrategy { get; set; } // e.g., "Always Abstain", "Follow Recommendation"
         public Dictionary<string, string> CategoryVotePreferences { get; set; } = new(); // Category → default vote
         public decimal MinimumProposalThreshold { get; set; } // Minimum % of assets to create proposal
         public List<string> AuthorizedProposalCategories { get; set; } = new(); // Categories client can propose for
@@ -185,9 +185,9 @@ namespace vv.Application.DTOs.Governance
 
     public class VotingPermissionDto
     {
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string Role { get; set; }
+        public required string UserId { get; set; }
+        public string? UserName { get; set; }
+        public required string Role { get; set; }
         public List<string> AllowedVoteTypes { get; set; } = new(); // For, Against, Abstain
         public decimal VotingPowerLimit { get; set; } // Max % of company voting power
         public bool RequiresApproval { get; set; }
