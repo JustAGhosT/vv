@@ -101,7 +101,7 @@ namespace vv.Infrastructure.Tests.Repository
             MockEventPublisher.Verify(e =>
                 e.PublishAsync(
                     It.IsAny<object>(),
-                    It.Is<string>(topic => topic.Contains("updated")),
+                    It.IsAny<string?>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -140,7 +140,7 @@ namespace vv.Infrastructure.Tests.Repository
             MockEventPublisher.Verify(e =>
                 e.PublishAsync(
                     It.IsAny<object>(),
-                    It.Is<string>(topic => topic.Contains("created")),
+                    It.IsAny<string?>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }

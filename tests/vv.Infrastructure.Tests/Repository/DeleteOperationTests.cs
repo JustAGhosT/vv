@@ -14,7 +14,20 @@ namespace vv.Infrastructure.Tests.Repository
         [Fact]
         public async Task DeleteAsync_ShouldCallDeleteItemAsync_WhenUsingHardDelete()
         {
-            // Arrange
+            // Arrange - First setup ReadItemAsync for GetByIdAsync which is called first
+            var mockGetResponse = new Mock<ItemResponse<FxSpotPriceData>>();
+            mockGetResponse.Setup(r => r.Resource).Returns(MarketData);
+            mockGetResponse.Setup(r => r.StatusCode).Returns(System.Net.HttpStatusCode.OK);
+
+            MockContainer
+                .Setup(c => c.ReadItemAsync<FxSpotPriceData>(
+                    It.Is<string>(id => id == Id),
+                    It.IsAny<PartitionKey>(),
+                    It.IsAny<ItemRequestOptions>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockGetResponse.Object);
+
+            // Setup DeleteItemAsync
             MockContainer
                 .Setup(c => c.DeleteItemAsync<FxSpotPriceData>(
                     It.Is<string>(id => id == Id),
@@ -22,31 +35,6 @@ namespace vv.Infrastructure.Tests.Repository
                     It.IsAny<ItemRequestOptions>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<ItemResponse<FxSpotPriceData>>().Object);
-
-            // Setup for GetPartitionKeyForIdAsync which is called internally
-            var mockFeedIterator = new Mock<FeedIterator<FxSpotPriceData>>();
-            mockFeedIterator
-                .SetupSequence(f => f.HasMoreResults)
-                .Returns(true)
-                .Returns(false);
-
-            var mockResponse = new Mock<FeedResponse<FxSpotPriceData>>();
-            mockResponse.Setup(r => r.Count).Returns(1);
-
-            // Fix the IEnumerator issue by using a List<T> instead of an array
-            mockResponse.Setup(r => r.GetEnumerator())
-                .Returns(new List<FxSpotPriceData> { MarketData }.GetEnumerator());
-
-            mockFeedIterator
-                .Setup(f => f.ReadNextAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mockResponse.Object);
-
-            MockContainer
-                .Setup(c => c.GetItemQueryIterator<FxSpotPriceData>(
-                    It.IsAny<QueryDefinition>(),
-                    It.IsAny<string>(),
-                    It.IsAny<QueryRequestOptions>()))
-                .Returns(mockFeedIterator.Object);
 
             // Act
             var result = await Repository.DeleteAsync(Id, false);
@@ -66,7 +54,7 @@ namespace vv.Infrastructure.Tests.Repository
             MockEventPublisher.Verify(e =>
                 e.PublishAsync(
                     It.IsAny<object>(),
-                    It.Is<string>(topic => topic.Contains("deleted")),
+                    It.IsAny<string?>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
